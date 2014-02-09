@@ -2,8 +2,7 @@
 
 #include <DirectXMath.h>
 #include "DXGame.h"
-#include "Mesh.h"
-#include "Material.h"
+#include "GameObject.h"
 
 // Include run-time memory checking in debug builds
 #if defined(DEBUG) || defined(_DEBUG)
@@ -41,7 +40,7 @@ private:
 	// Buffers to hold actual geometry
 	//ID3D11Buffer* vertexBuffer;
 	//ID3D11Buffer* indexBuffer;
-	Mesh* mesh;
+	//Mesh* mesh;
 
 	// Our basic shaders for this example
 	//ID3D11PixelShader* pixelShader;
@@ -51,7 +50,9 @@ private:
 	//ID3D11InputLayout* inputLayout;
 	//ID3D11Buffer* vsConstantBuffer;
 	//VertexShaderConstantBuffer vsConstantBufferData;
-	Material* material;
+	//Material* material;
+
+	GameObject* gameGO;
 
 	// The matrices to go from 3D model space
 	// to screen space

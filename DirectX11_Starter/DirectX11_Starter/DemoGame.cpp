@@ -60,6 +60,8 @@ DemoGame::DemoGame(HINSTANCE hInstance) : DXGame(hInstance)
 DemoGame::~DemoGame()
 {
 	// Release all of the D3D stuff that's still hanging out
+	if(gameGO != nullptr)
+		delete gameGO;
 }
 
 #pragma endregion
@@ -75,20 +77,9 @@ bool DemoGame::Init()
 
 	// Set up buffers and such
 	//LoadShadersAndInputLayout();
-	material = new Material(device);
+	//material = new Material();
 
-	// Set up the vertices
-	XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	XMFLOAT4 green	= XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	XMFLOAT4 blue	= XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-	Vertex vertices[] = 
-	{
-		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), green },
-		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), blue },
-	};
-	UINT indices[] = { 0, 2, 1 };
-	mesh = new Mesh(device, vertices, indices);
+	gameGO = new GameObject();
 
 	// Set up view matrix (camera)
 	// In an actual game, update this when the camera moves (so every frame)
@@ -132,7 +123,8 @@ void DemoGame::OnResize()
 // push it to the buffer on the device
 void DemoGame::UpdateScene(float dt)
 {
-	material->SetBufferData(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
+	//material->SetBufferData(worldMatrix, viewMatrix, projectionMatrix);
+	gameGO->Update(viewMatrix, projectionMatrix);
 }
 
 // Clear the screen, redraw everything, present
@@ -148,17 +140,7 @@ void DemoGame::DrawScene()
 		1.0f,
 		0);
 
-	// Set mesh-related buffers in the input assembler
-	mesh->SetInputAssemblerOptions(deviceContext);
-
-	// Set material-related buffers in the input assembler
-	material->SetInputAssemblerOptions(deviceContext);
-
-	// Finally do the actual drawing
-	deviceContext->DrawIndexed(
-		3,	// The number of indices we're using in this draw
-		0,
-		0);
+	gameGO->Render();
 
 	// Present the buffer
 	HR(swapChain->Present(0, 0));

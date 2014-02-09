@@ -2,6 +2,7 @@
 #define _DXUTILITIES_H
 
 #include "dxerr.h"
+#include <d3d11.h>
 
 // Convenience macro for releasing a COM object
 #define ReleaseMacro(x) { if(x){ x->Release(); x = 0; } }
@@ -25,5 +26,25 @@
 	#define HR(x) (x)
 	#endif
 #endif
+
+class DeviceManager {
+private:
+	static ID3D11Device* _currentDevice;
+	static ID3D11DeviceContext* _currentDeviceContext;
+public:
+	static ID3D11Device* GetCurrentDevice(){
+		return _currentDevice;
+	};
+	static ID3D11DeviceContext* GetCurrentDeviceContext(){
+		return _currentDeviceContext;
+	};
+
+	static void SetCurrentDevice(ID3D11Device* device){
+		_currentDevice = device;
+	};
+	static void SetCurrentDeviceContext(ID3D11DeviceContext* deviceContext){
+		_currentDeviceContext = deviceContext;
+	};
+};
 
 #endif // _DXUTILITIES_H

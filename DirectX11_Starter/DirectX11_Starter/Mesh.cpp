@@ -1,32 +1,27 @@
 #include "Mesh.h"
 
 // Construct a mesh without vertices
-Mesh::Mesh(ID3D11Device* device){
+Mesh::Mesh(){
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	SetDevice(device);
 };
 
 // Construct a mesh with vertices, assume clockwise indices
-Mesh::Mesh(ID3D11Device* device, Vertex* vertices){
+Mesh::Mesh(Vertex* vertices){
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	SetDevice(device);
 	SetVertexBuffer(vertices);
 };
 
 // Construct a mesh with vertices, custom indices
-Mesh::Mesh(ID3D11Device* device, Vertex* vertices, UINT* indices){
+Mesh::Mesh(Vertex* vertices, UINT* indices){
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	SetDevice(device);
 	SetVertexBuffer(vertices);
 	SetIndexBuffer(indices);
 };
 
-void Mesh::SetDevice(ID3D11Device* dev){
-	device = dev;
-};
-
-
 void Mesh::SetVertexBuffer(Vertex* vertices){
+	// Get the curent Device
+	ID3D11Device* device = DeviceManager::GetCurrentDevice();
+
 	// Create the vertex buffer
 	D3D11_BUFFER_DESC vbd;
     vbd.Usage					= D3D11_USAGE_IMMUTABLE;
@@ -41,6 +36,9 @@ void Mesh::SetVertexBuffer(Vertex* vertices){
 };
 
 void Mesh::SetIndexBuffer(UINT* indices){
+	// Get the curent Device
+	ID3D11Device* device = DeviceManager::GetCurrentDevice();
+
 	// Create the index buffer
 	D3D11_BUFFER_DESC ibd;
     ibd.Usage					= D3D11_USAGE_IMMUTABLE;
@@ -58,13 +56,18 @@ void Mesh::SetTopology(D3D11_PRIMITIVE_TOPOLOGY topo){
 	topology = topo;
 };
 
-void Mesh::SetInputAssemblerOptions(ID3D11DeviceContext* deviceContext){
+void Mesh::SetInputAssemblerOptions(){
+	// Get the current Device Context
+	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
+
 	// Set buffers in the input assembler
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
+	// Set the current vertex buffer
 	deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+	// Set the current index buffer
 	deviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
+	// Set the topology
 	deviceContext->IASetPrimitiveTopology(topology);
 };
 

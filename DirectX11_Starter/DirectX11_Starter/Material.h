@@ -18,16 +18,16 @@ struct VertexShaderConstantBuffer
 class Material {
 
 public:
-	Material(ID3D11Device* device);
+	Material();
 	~Material();
 
-	void SetBufferData(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p);
-	void SetInputAssemblerOptions(ID3D11DeviceContext* deviceContext);
+	void SetBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p);
+	void SetInputAssemblerOptions();
 
 private:
-	void LoadVertexShader(ID3D11Device* device);
-	void LoadPixelShader(ID3D11Device* device);
-	void LoadConstantBuffer(ID3D11Device* device);
+	void LoadVertexShader();
+	void LoadPixelShader();
+	void LoadConstantBuffer();
 
 	//ID3D11Texture2D* texture;
 	ID3D11PixelShader* pixelShader;

@@ -8,15 +8,19 @@ using namespace DirectX;
 
 class Transform {
 public:
+	Transform();
+	~Transform();
+
 	XMFLOAT3 position;
 	XMFLOAT3 rotation;
 	XMFLOAT3 scale;
 
-	XMFLOAT4X4 ModelMatrix(){
-		XMFLOAT4X4 modelMatrix;
-		XMStoreFloat4x4(&modelMatrix, XMMatrixTranspose(XMMatrixIdentity()));
-	};
+	// Returns a model matrix of the pos, rot, and scale
+	XMFLOAT4X4 ModelMatrix();
 
+	// Returns an identity transform
+	// Position/rotation 0,0,0, Scale 1,1,1
+	static Transform Identity();
 };
 
 #endif // _TRANSFORM_H

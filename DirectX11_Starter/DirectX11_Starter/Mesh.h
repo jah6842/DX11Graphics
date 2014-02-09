@@ -12,26 +12,25 @@ class Mesh {
 
 public:
 	// Construct a mesh without vertices
-	Mesh(ID3D11Device* device);
+	Mesh();
 	// Construct a mesh with vertices, assume clockwise indices
-	Mesh(ID3D11Device* device, Vertex* vertices);
+	Mesh(Vertex* vertices);
 	// Construct a mesh with vertices, custom indices
-	Mesh(ID3D11Device* device, Vertex* vertices, UINT* indices);
+	Mesh(Vertex* vertices, UINT* indices);
 	~Mesh();
 
-	void SetDevice(ID3D11Device* device);
 	void SetVertexBuffer(Vertex* vertices);
 	void SetIndexBuffer(UINT* indices);
 	void SetTopology(D3D11_PRIMITIVE_TOPOLOGY topo);
 
-	void SetInputAssemblerOptions(ID3D11DeviceContext* deviceContext);
+	void SetInputAssemblerOptions();
 
 private:
-	ID3D11Device* device;
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
 
-	D3D_PRIMITIVE_TOPOLOGY topology; // points, lines, triangle strip, triangles, etc
+	// How is the data laid out? 
+	D3D_PRIMITIVE_TOPOLOGY topology; // default is D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST 
 };
 
 
