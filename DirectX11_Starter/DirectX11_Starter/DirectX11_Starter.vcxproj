@@ -69,12 +69,19 @@
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DXGame.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DemoGame.h" />
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DXGame.h" />
+    <ClInclude Include="DXUtilities.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
