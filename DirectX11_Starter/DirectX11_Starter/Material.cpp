@@ -14,8 +14,8 @@ ID3D11ShaderResourceView* Material::currentTexture = nullptr;
 ID3D11SamplerState* Material::currentTextureSampler = nullptr;
 
 Material::Material(){
-	LoadVertexShader(L"../Resources/Shaders/TexturedVertexShader.cso");
-	LoadPixelShader(L"../Resources/Shaders/TexturedPixelShader.cso");
+	LoadVertexShader(L"../Resources/Shaders/TexturedVertex.cso");
+	LoadPixelShader(L"../Resources/Shaders/TexturedPixel.cso");
 	LoadConstantBuffer();
 	LoadTexture(L"../Resources/Textures/texture.jpg");
 };

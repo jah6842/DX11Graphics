@@ -14,42 +14,30 @@ cbuffer perModel : register( b0 )
 struct VertexShaderInput
 {
 	float3 position		: POSITION;
-	float2 TexCoord		: TEXCOORD;
-};
-
-Texture2D ObjTexture;
-SamplerState ObjSamplerState;
-
-struct VS_OUTPUT
-{
-	float4 Pos : SV_POSITION;
-	float2 TexCoord : TEXCOORD;
+	float4 color		: COLOR;
 };
 
 // Defines the output data of our vertex shader
 // - At a minimum, you'll need an SV_POSITION
 // - Should match the pixel shader's input
-/*
 struct VertexToPixel
 {
 	float4 position		: SV_POSITION;	// System Value Position - Has specific meaning to the pipeline!
 	float4 color		: COLOR;
 };
-*/
 
 // The entry point for our vertex shader
-VS_OUTPUT main( VertexShaderInput input )
+VertexToPixel main( VertexShaderInput input )
 {
 	// Set up output
-	VS_OUTPUT output;
+	VertexToPixel output;
 
 	// Calculate output position
 	matrix worldViewProj = mul(mul(world, view), projection);
-	output.Pos = mul(float4(input.position, 1.0f), worldViewProj);
+	output.position = mul(float4(input.position, 1.0f), worldViewProj);
 
 	// Pass the color through - will be interpolated per-pixel by the rasterizer
-	//output.color = input.color;
-	output.TexCoord = input.TexCoord;
+	output.color = input.color;
 
 	return output;
 }
