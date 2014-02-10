@@ -119,6 +119,16 @@ void DemoGame::UpdateScene(float dt)
 		}
 	}
 
+	float speed = 10.0f;
+	if(GetAsyncKeyState('W'))
+		Camera::MainCamera._transform.position.y += (speed * dt);
+	if(GetAsyncKeyState('S'))
+		Camera::MainCamera._transform.position.y -= (speed * dt);
+	if(GetAsyncKeyState('A'))
+		Camera::MainCamera._transform.position.x -= (speed * dt);
+	if(GetAsyncKeyState('D'))
+		Camera::MainCamera._transform.position.x += (speed * dt);
+
 	//Camera::MainCamera._transform.position.x += .0001f;
 }
 
@@ -168,5 +178,9 @@ void DemoGame::OnMouseMove(WPARAM btnState, int x, int y)
 {
 	prevMousePos.x = x;
 	prevMousePos.y = y;
+}
+
+void DemoGame::OnMouseScroll(WPARAM whlState, int delta){
+	Camera::MainCamera._transform.position.z += delta / 10.0f;
 }
 #pragma endregion

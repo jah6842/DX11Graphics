@@ -22,7 +22,7 @@ GameObject::GameObject(){
 
 void GameObject::Update(float dt){
 	//transform.position.z += .0001f;
-	transform.rotation.z += XMConvertToRadians(360.0f) * dt;
+	transform.rotation.z += XMConvertToRadians(60.0f) * dt;
 
 	material->SetBufferData(transform.ModelMatrix(),
 		Camera::MainCamera.GetViewMatrix(),

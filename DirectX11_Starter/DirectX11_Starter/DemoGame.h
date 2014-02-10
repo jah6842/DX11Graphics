@@ -33,6 +33,7 @@ public:
 	void OnMouseDown(WPARAM btnState, int x, int y);
 	void OnMouseUp(WPARAM btnState, int x, int y);
 	void OnMouseMove(WPARAM btnState, int x, int y);
+	void OnMouseScroll(WPARAM whlState, int delta);
 
 private:
 	//GameObject* gameGO;
@@ -42,4 +43,5 @@ private:
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.
 	POINT prevMousePos;
+	POINT prevMouseScroll;
 };
