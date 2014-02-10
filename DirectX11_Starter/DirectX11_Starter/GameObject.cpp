@@ -101,8 +101,8 @@ GameObject::GameObject(std::wstring meshName){
 GameObject::~GameObject(){
 	if(mesh != nullptr)
 		delete mesh;
-	//if(material != nullptr)
-	//	delete material;
+	if(material != nullptr)
+		delete material;
 };
 
 /*
