@@ -6,7 +6,7 @@
 #include "DXGame.h"
 #include "GameObject.h"
 #include "Camera.h"
-#include "vld.h"
+//#include <vld.h>
 
 // Include run-time memory checking in debug builds
 #if defined(DEBUG) || defined(_DEBUG)
