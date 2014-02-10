@@ -1,8 +1,11 @@
 #pragma once
 
+#include <vector>
 #include <DirectXMath.h>
 #include "DXGame.h"
 #include "GameObject.h"
+#include "Camera.h"
+#include "vld.h"
 
 // Include run-time memory checking in debug builds
 #if defined(DEBUG) || defined(_DEBUG)
@@ -32,33 +35,9 @@ public:
 	void OnMouseMove(WPARAM btnState, int x, int y);
 
 private:
-	// Initialization for our "game" demo
-	//void CreateGeometryBuffers();
-	//void LoadShadersAndInputLayout();
-
-private:
-	// Buffers to hold actual geometry
-	//ID3D11Buffer* vertexBuffer;
-	//ID3D11Buffer* indexBuffer;
-	//Mesh* mesh;
-
-	// Our basic shaders for this example
-	//ID3D11PixelShader* pixelShader;
-	//ID3D11VertexShader* vertexShader;
-
-	// A few more odds and ends we'll need
-	//ID3D11InputLayout* inputLayout;
-	//ID3D11Buffer* vsConstantBuffer;
-	//VertexShaderConstantBuffer vsConstantBufferData;
-	//Material* material;
-
-	GameObject* gameGO;
-
-	// The matrices to go from 3D model space
-	// to screen space
-	XMFLOAT4X4 worldMatrix;
-	XMFLOAT4X4 viewMatrix;
-	XMFLOAT4X4 projectionMatrix;
+	//GameObject* gameGO;
+	static const int NUM_GO = 20;
+	std::vector<GameObject*> gameobjects;
 
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.

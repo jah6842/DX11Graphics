@@ -60,8 +60,10 @@ DemoGame::DemoGame(HINSTANCE hInstance) : DXGame(hInstance)
 DemoGame::~DemoGame()
 {
 	// Release all of the D3D stuff that's still hanging out
-	if(gameGO != nullptr)
-		delete gameGO;
+	while(!gameobjects.empty()){
+		delete gameobjects.back();
+		gameobjects.pop_back();
+	}
 }
 
 #pragma endregion
@@ -75,24 +77,17 @@ bool DemoGame::Init()
 	if( !DXGame::Init() )
 		return false;
 
-	// Set up buffers and such
-	//LoadShadersAndInputLayout();
-	//material = new Material();
+	// Set up the main camera
+	Camera::MainCamera = Camera(windowWidth, windowHeight);
 
-	gameGO = new GameObject();
-
-	// Set up view matrix (camera)
-	// In an actual game, update this when the camera moves (so every frame)
-	XMVECTOR position	= XMVectorSet(0, 0, -5, 0);
-	XMVECTOR target		= XMVectorSet(0, 0, 0, 0);
-	XMVECTOR up			= XMVectorSet(0, 1, 0, 0);
-	XMMATRIX V			= XMMatrixLookAtLH(position, target, up);
-	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V));
-
-	// Set up world matrix
-	// In an actual game, update this when the object moves (so every frame)
-	XMMATRIX W = XMMatrixIdentity();
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W));
+	// Create some game objects
+	for(int i = 0; i < NUM_GO; i++){
+		for(int j = 0; j < NUM_GO; j++){
+			GameObject* g = new GameObject();
+			g->transform.position = XMFLOAT3(i * 3,j * 3,0);
+			gameobjects.push_back(g);
+		}
+	}
 
 	return true;
 }
@@ -107,13 +102,7 @@ void DemoGame::OnResize()
 	// Handle base-level DX resize stuff
 	DXGame::OnResize();
 
-	// Update our projection matrix since the window size changed
-	XMMATRIX P = XMMatrixPerspectiveFovLH(
-		0.25f * 3.1415926535f,
-		AspectRatio(),
-		0.1f,
-		100.0f);
-	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P));
+	Camera::MainCamera.Resize(windowWidth, windowHeight);
 }
 #pragma endregion
 
@@ -124,7 +113,13 @@ void DemoGame::OnResize()
 void DemoGame::UpdateScene(float dt)
 {
 	//material->SetBufferData(worldMatrix, viewMatrix, projectionMatrix);
-	gameGO->Update(viewMatrix, projectionMatrix);
+	for(int i = 0; i < NUM_GO; i++){
+		for(int j = 0; j < NUM_GO; j++){
+			gameobjects[i * NUM_GO + j]->Update(dt);
+		}
+	}
+
+	//Camera::MainCamera._transform.position.x += .0001f;
 }
 
 // Clear the screen, redraw everything, present
@@ -140,7 +135,11 @@ void DemoGame::DrawScene()
 		1.0f,
 		0);
 
-	gameGO->Render();
+	for(int i = 0; i < NUM_GO; i++){
+		for(int j = 0; j < NUM_GO; j++){
+			gameobjects[i * NUM_GO + j]->Render();
+		}
+	}
 
 	// Present the buffer
 	HR(swapChain->Present(0, 0));

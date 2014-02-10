@@ -20,15 +20,13 @@ GameObject::GameObject(){
 	mesh = new Mesh(vertices, indices);
 };
 
-void GameObject::Update(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix){
-	// Camera:: view matrix TODO
-	// Camera:: projection matrix TODO
+void GameObject::Update(float dt){
+	//transform.position.z += .0001f;
+	transform.rotation.z += XMConvertToRadians(360.0f) * dt;
 
-	//transform.position.x += .0001f;
-	//transform.rotation.z += .0001f;
-	//transform.scale.x += .00001f;
-
-	material->SetBufferData(transform.ModelMatrix(), viewMatrix, projectionMatrix);
+	material->SetBufferData(transform.ModelMatrix(),
+		Camera::MainCamera.GetViewMatrix(),
+		Camera::MainCamera.GetProjectionMatrix());
 
 };
 

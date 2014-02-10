@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Transform.h"
+#include "Camera.h"
 
 class GameObject {
 
@@ -17,7 +18,7 @@ public:
 	//GameObject(std::wstring meshName);
 	~GameObject();
 
-	void Update(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix);
+	void Update(float dt);
 	void Render();
 
 	// Get and Set
