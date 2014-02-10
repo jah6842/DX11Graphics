@@ -9,6 +9,9 @@ using namespace DirectX;
 // Vertex struct for triangles
 struct Vertex
 {
+	//Vertex(XMFLOAT3 pos, XMFLOAT4 c) : Position(pos), Color(c){}
+	Vertex(float x, float y, float z, XMFLOAT4 c) : Position(x,y,z), Color(c){}
+
 	//XMFLOAT2 UV;
 	XMFLOAT3 Position;
 	XMFLOAT4 Color;

@@ -1,6 +1,8 @@
 #ifndef _MATERIAL_H
 #define _MATERIAL_H
 
+#include <map>
+#include <string>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -25,8 +27,12 @@ public:
 	void SetInputAssemblerOptions();
 
 private:
-	void LoadVertexShader();
-	void LoadPixelShader();
+
+	static std::map<std::wstring, ID3D11PixelShader*> _pixelShaders;
+	static std::map<std::wstring, ID3D11VertexShader*> _vertexShaders;
+
+	void LoadVertexShader(std::wstring vShaderName);
+	void LoadPixelShader(std::wstring pShaderName);
 	void LoadConstantBuffer();
 
 	//ID3D11Texture2D* texture;

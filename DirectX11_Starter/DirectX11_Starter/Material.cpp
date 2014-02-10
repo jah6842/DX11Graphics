@@ -1,8 +1,12 @@
 #include "Material.h"
 
+// Static variables
+std::map<std::wstring, ID3D11PixelShader*> Material::_pixelShaders;
+std::map<std::wstring, ID3D11VertexShader*> Material::_vertexShaders;
+
 Material::Material(){
-	LoadVertexShader();
-	LoadPixelShader();
+	LoadVertexShader(L"VertexShader.cso");
+	LoadPixelShader(L"PixelShader.cso");
 	LoadConstantBuffer();
 };
 
@@ -65,13 +69,20 @@ void Material::LoadConstantBuffer(){
 		&vsConstantBuffer));
 };
 
-void Material::LoadPixelShader(){
+void Material::LoadPixelShader(std::wstring pShaderName){
+
+	// Check if the shader already exists
+	if(_pixelShaders.count(pShaderName)){
+		pixelShader = _pixelShaders[pShaderName];
+		return;
+	}
+
 	// Get the current device
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
 
 	// Load Pixel Shader ---------------------------------------
 	ID3DBlob* psBlob;
-	D3DReadFileToBlob(L"PixelShader.cso", &psBlob);
+	D3DReadFileToBlob(pShaderName.c_str(), &psBlob);
 
 	// Create the shader on the device
 	HR(device->CreatePixelShader(
@@ -87,7 +98,14 @@ void Material::LoadPixelShader(){
 // Loads shaders from compiled shader object (.cso) files, and uses the
 // vertex shader to create an input layout which is needed when sending
 // vertex data to the device
-void Material::LoadVertexShader(){
+void Material::LoadVertexShader(std::wstring vShaderName){
+
+	// Check if the shader already exists
+	if(_vertexShaders.count(vShaderName)){
+		vertexShader = _vertexShaders[vShaderName];
+		return;
+	}
+
 	// Set up the vertex layout description
 	// This has to match the vertex input layout in the vertex shader
 	// We can't set up the input layout yet since we need the actual vert shader
@@ -102,7 +120,7 @@ void Material::LoadVertexShader(){
 
 	// Load Vertex Shader --------------------------------------
 	ID3DBlob* vsBlob;
-	D3DReadFileToBlob(L"VertexShader.cso", &vsBlob);
+	D3DReadFileToBlob(vShaderName.c_str(), &vsBlob);
 
 	// Create the shader on the device
 	HR(device->CreateVertexShader(

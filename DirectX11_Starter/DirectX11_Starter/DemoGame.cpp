@@ -83,9 +83,11 @@ bool DemoGame::Init()
 	// Create some game objects
 	for(int i = 0; i < NUM_GO; i++){
 		for(int j = 0; j < NUM_GO; j++){
-			GameObject* g = new GameObject();
-			g->transform.position = XMFLOAT3(i * 3,j * 3,0);
-			gameobjects.push_back(g);
+			for(int k = 0; k < NUM_GO; k++){
+				GameObject* g = new GameObject();
+				g->transform.position = XMFLOAT3(i * 5,j * 5,k * 5);
+				gameobjects.push_back(g);
+			}
 		}
 	}
 
@@ -115,7 +117,9 @@ void DemoGame::UpdateScene(float dt)
 	//material->SetBufferData(worldMatrix, viewMatrix, projectionMatrix);
 	for(int i = 0; i < NUM_GO; i++){
 		for(int j = 0; j < NUM_GO; j++){
-			gameobjects[i * NUM_GO + j]->Update(dt);
+			for(int k = 0; k < NUM_GO; k++){
+				gameobjects[i * NUM_GO * NUM_GO + j * NUM_GO + k]->Update(dt);
+			}
 		}
 	}
 
@@ -147,7 +151,9 @@ void DemoGame::DrawScene()
 
 	for(int i = 0; i < NUM_GO; i++){
 		for(int j = 0; j < NUM_GO; j++){
-			gameobjects[i * NUM_GO + j]->Render();
+			for(int k = 0; k < NUM_GO; k++){
+				gameobjects[i * NUM_GO * NUM_GO + j * NUM_GO + k]->Render();
+			}
 		}
 	}
 
