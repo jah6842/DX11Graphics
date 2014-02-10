@@ -64,6 +64,8 @@ DemoGame::~DemoGame()
 		delete gameobjects.back();
 		gameobjects.pop_back();
 	}
+
+	Material::Cleanup();
 }
 
 #pragma endregion

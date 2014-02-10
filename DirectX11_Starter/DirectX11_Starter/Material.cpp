@@ -13,6 +13,30 @@ ID3D11InputLayout* Material::currentInputLayout = nullptr;
 ID3D11ShaderResourceView* Material::currentTexture = nullptr;
 ID3D11SamplerState* Material::currentTextureSampler = nullptr;
 
+// Static class to cleanup all necessary items
+void Material::Cleanup(){
+	typedef std::map<std::wstring, ID3D11PixelShader*>::iterator pixelItr;
+	for(pixelItr iterator = _pixelShaders.begin(); iterator != _pixelShaders.end(); iterator++) {
+		ReleaseMacro(iterator->second);
+	}
+	typedef std::map<std::wstring, ID3D11VertexShader*>::iterator vertexItr;
+	for(vertexItr iterator = _vertexShaders.begin(); iterator != _vertexShaders.end(); iterator++) {
+		ReleaseMacro(iterator->second);
+	}
+	typedef std::map<std::wstring, ID3D11InputLayout*>::iterator inputItr;
+	for(inputItr iterator = _inputLayouts.begin(); iterator != _inputLayouts.end(); iterator++) {
+		ReleaseMacro(iterator->second);
+	}
+	typedef std::map<std::wstring, ID3D11ShaderResourceView*>::iterator texItr;
+	for(texItr iterator = _textures.begin(); iterator != _textures.end(); iterator++) {
+		ReleaseMacro(iterator->second);
+	}
+	typedef std::map<std::wstring, ID3D11SamplerState*>::iterator texSampItr;
+	for(texSampItr iterator = _textureSamplers.begin(); iterator != _textureSamplers.end(); iterator++) {
+		ReleaseMacro(iterator->second);
+	}
+};
+
 Material::Material(){
 	LoadVertexShader(L"../Resources/Shaders/TexturedVertex.cso");
 	LoadPixelShader(L"../Resources/Shaders/TexturedPixel.cso");
@@ -21,10 +45,12 @@ Material::Material(){
 };
 
 Material::~Material(){
-	ReleaseMacro(vertexShader);
-	ReleaseMacro(pixelShader);
+	//ReleaseMacro(vertexShader);
+	//ReleaseMacro(pixelShader);
 	ReleaseMacro(vsConstantBuffer);
-	ReleaseMacro(inputLayout);
+	//ReleaseMacro(inputLayout);
+	//ReleaseMacro(texture);
+	//ReleaseMacro(textureSamplerState);
 };
 
 void Material::SetBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p){

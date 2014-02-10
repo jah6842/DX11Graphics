@@ -27,6 +27,8 @@ public:
 	void SetBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p);
 	void SetInputAssemblerOptions();
 
+	static void Cleanup();
+
 private:
 	// Static containers so we don't end up with duplicates
 	static std::map<std::wstring, ID3D11PixelShader*> _pixelShaders;
