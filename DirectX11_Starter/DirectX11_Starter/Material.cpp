@@ -5,9 +5,10 @@ std::map<std::wstring, ID3D11PixelShader*> Material::_pixelShaders;
 std::map<std::wstring, ID3D11VertexShader*> Material::_vertexShaders;
 
 Material::Material(){
-	LoadVertexShader(L"VertexShader.cso");
-	LoadPixelShader(L"PixelShader.cso");
+	LoadVertexShader(L"../Resources/Shaders/TexturedVertexShader.cso");
+	LoadPixelShader(L"../Resources/Shaders/TexturedPixelShader.cso");
 	LoadConstantBuffer();
+	LoadTexture(L"../Resources/Textures/texture.jpg");
 };
 
 Material::~Material(){
@@ -47,6 +48,9 @@ void Material::SetInputAssemblerOptions(){
 		1, 
 		&vsConstantBuffer);
 	deviceContext->PSSetShader(pixelShader, NULL, 0);
+
+	deviceContext->PSSetShaderResources(0,1,&texture);
+	deviceContext->PSSetSamplers(0,1,&textureSamplerState);
 
 	deviceContext->IASetInputLayout(inputLayout);
 };
@@ -109,10 +113,17 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 	// Set up the vertex layout description
 	// This has to match the vertex input layout in the vertex shader
 	// We can't set up the input layout yet since we need the actual vert shader
+	/*
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,	D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};*/
+
+	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },  
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },  
 	};
 
 	// Get the current device
@@ -139,4 +150,25 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 
 	// Clean up
 	ReleaseMacro(vsBlob);
+};
+
+void Material::LoadTexture(std::wstring texName){
+	// Get the current device
+	ID3D11Device* device = DeviceManager::GetCurrentDevice();
+
+	D3DX11CreateShaderResourceViewFromFile( device, texName.c_str(), NULL, NULL, &texture, NULL );
+
+	// Describe the Sample State
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory( &sampDesc, sizeof(sampDesc) );
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+    
+	//Create the Sample State
+	device->CreateSamplerState( &sampDesc, &textureSamplerState );
 };

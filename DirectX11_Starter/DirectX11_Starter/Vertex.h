@@ -9,12 +9,11 @@ using namespace DirectX;
 // Vertex struct for triangles
 struct Vertex
 {
-	//Vertex(XMFLOAT3 pos, XMFLOAT4 c) : Position(pos), Color(c){}
-	Vertex(float x, float y, float z, XMFLOAT4 c) : Position(x,y,z), Color(c){}
+	Vertex(){}
+	Vertex(float x, float y, float z, float u, float v) : pos(x,y,z), texCoord(u, v){}
 
-	//XMFLOAT2 UV;
-	XMFLOAT3 Position;
-	XMFLOAT4 Color;
+	XMFLOAT3 pos;
+	XMFLOAT2 texCoord;
 };
 
 #endif // _VERTEX_H

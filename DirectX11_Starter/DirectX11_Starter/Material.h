@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <d3d11.h>
+#include <DirectX\D3DX11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include "DXUtilities.h"
@@ -34,10 +35,13 @@ private:
 	void LoadVertexShader(std::wstring vShaderName);
 	void LoadPixelShader(std::wstring pShaderName);
 	void LoadConstantBuffer();
+	void LoadTexture(std::wstring texName);
 
-	//ID3D11Texture2D* texture;
 	ID3D11PixelShader* pixelShader;
 	ID3D11VertexShader* vertexShader;
+
+	ID3D11ShaderResourceView* texture;
+	ID3D11SamplerState* textureSamplerState;
 
 	// A few more odds and ends we'll need
 	ID3D11InputLayout* inputLayout;

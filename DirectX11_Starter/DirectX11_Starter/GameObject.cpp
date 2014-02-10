@@ -27,35 +27,35 @@ GameObject::GameObject(){
 	Vertex vertices[] =
 	{
 		// Front Face
-		Vertex(-1.0f, -1.0f, -1.0f, red),
-		Vertex(-1.0f,  1.0f, -1.0f, red),
-		Vertex( 1.0f,  1.0f, -1.0f, red),
-		Vertex( 1.0f, -1.0f, -1.0f, red),
+		Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+		Vertex(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
+		Vertex( 1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
+		Vertex( 1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
 		// Back Face
-		Vertex(-1.0f, -1.0f, 1.0f, blue),
-		Vertex( 1.0f, -1.0f, 1.0f, blue),
-		Vertex( 1.0f,  1.0f, 1.0f, blue),
-		Vertex(-1.0f,  1.0f, 1.0f, blue),
+		Vertex(-1.0f, -1.0f, 1.0f, 1.0f, 1.0f),
+		Vertex( 1.0f, -1.0f, 1.0f, 0.0f, 1.0f),
+		Vertex( 1.0f,  1.0f, 1.0f, 0.0f, 0.0f),
+		Vertex(-1.0f,  1.0f, 1.0f, 1.0f, 0.0f),
 		// Top Face
-		Vertex(-1.0f, 1.0f, -1.0f, green),
-		Vertex(-1.0f, 1.0f,  1.0f, green),
-		Vertex( 1.0f, 1.0f,  1.0f, green),
-		Vertex( 1.0f, 1.0f, -1.0f, green),
+		Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f),
+		Vertex(-1.0f, 1.0f,  1.0f, 0.0f, 0.0f),
+		Vertex( 1.0f, 1.0f,  1.0f, 1.0f, 0.0f),
+		Vertex( 1.0f, 1.0f, -1.0f, 1.0f, 1.0f),
 		// Bottom Face
-		Vertex(-1.0f, -1.0f, -1.0f, red),
-		Vertex( 1.0f, -1.0f, -1.0f, red),
-		Vertex( 1.0f, -1.0f,  1.0f, red),
-		Vertex(-1.0f, -1.0f,  1.0f, red),
+		Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
+		Vertex( 1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+		Vertex( 1.0f, -1.0f,  1.0f, 0.0f, 0.0f),
+		Vertex(-1.0f, -1.0f,  1.0f, 1.0f, 0.0f),
 		// Left Face
-		Vertex(-1.0f, -1.0f,  1.0f, blue),
-		Vertex(-1.0f,  1.0f,  1.0f, blue),
-		Vertex(-1.0f,  1.0f, -1.0f, blue),
-		Vertex(-1.0f, -1.0f, -1.0f, blue),
+		Vertex(-1.0f, -1.0f,  1.0f, 0.0f, 1.0f),
+		Vertex(-1.0f,  1.0f,  1.0f, 0.0f, 0.0f),
+		Vertex(-1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
+		Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
 		// Right Face
-		Vertex( 1.0f, -1.0f, -1.0f, green),
-		Vertex( 1.0f,  1.0f, -1.0f, green),
-		Vertex( 1.0f,  1.0f,  1.0f, green),
-		Vertex( 1.0f, -1.0f,  1.0f, green),
+		Vertex( 1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+		Vertex( 1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
+		Vertex( 1.0f,  1.0f,  1.0f, 1.0f, 0.0f),
+		Vertex( 1.0f, -1.0f,  1.0f, 1.0f, 1.0f),
 	};
 	UINT indices[] = {
 		// Front Face
