@@ -91,7 +91,6 @@ void Material::SetInputAssemblerOptions(){
 		currentPixelShader = pixelShader;
 		deviceContext->PSSetShader(pixelShader, NULL, 0);
 	}
-
 	if(texture != currentTexture){
 		currentTexture = texture;
 		deviceContext->PSSetShaderResources(0,1,&texture);
@@ -100,7 +99,6 @@ void Material::SetInputAssemblerOptions(){
 		currentTextureSampler = textureSamplerState;
 		deviceContext->PSSetSamplers(0,1,&textureSamplerState);
 	}
-
 	if(inputLayout != currentInputLayout){
 		currentInputLayout = inputLayout;
 		deviceContext->IASetInputLayout(inputLayout);

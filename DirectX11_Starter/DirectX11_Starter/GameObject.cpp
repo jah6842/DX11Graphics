@@ -92,23 +92,6 @@ void GameObject::Update(float dt){
 
 };
 
-void GameObject::Render(){
-	// Get the current device context
-	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
-
-	// Set mesh-related buffers in the input assembler
-	mesh->SetInputAssemblerOptions();
-
-	// Set material-related buffers in the input assembler
-	material->SetInputAssemblerOptions();
-
-	// Finally do the actual drawing
-	deviceContext->DrawIndexed(
-		mesh->IndexCount(),	// The number of indices we're using in this draw
-		0,
-		0);
-};
-
 /*
 GameObject::GameObject(std::wstring meshName){
 	mesh = meshName;
@@ -118,8 +101,8 @@ GameObject::GameObject(std::wstring meshName){
 GameObject::~GameObject(){
 	if(mesh != nullptr)
 		delete mesh;
-	if(material != nullptr)
-		delete material;
+	//if(material != nullptr)
+	//	delete material;
 };
 
 /*

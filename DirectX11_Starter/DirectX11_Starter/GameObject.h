@@ -6,6 +6,7 @@
 #include "Material.h"
 #include "Transform.h"
 #include "Camera.h"
+//#include "Renderer.h"
 
 class GameObject {
 
@@ -19,7 +20,6 @@ public:
 	~GameObject();
 
 	void Update(float dt);
-	void Render();
 
 	// Get and Set
 	//void Mesh(std::wstring meshName);

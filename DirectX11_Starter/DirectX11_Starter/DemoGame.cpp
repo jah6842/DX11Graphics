@@ -163,7 +163,8 @@ void DemoGame::DrawScene()
 		0);
 
 	for(int i = 0; i < gameobjects.size(); i++){
-		gameobjects[i]->Render();
+		//gameobjects[i]->Render();
+		Renderer::Draw(gameobjects[i]);
 	}
 
 	// Present the buffer

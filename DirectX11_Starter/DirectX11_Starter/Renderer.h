@@ -6,6 +6,7 @@
 
 #include "Mesh.h"
 #include "Material.h"
+#include "GameObject.h"
 
 class Renderer {
 	static std::map<std::wstring, Mesh> meshes;
@@ -13,6 +14,9 @@ class Renderer {
 
 	Renderer();
 	~Renderer();
+public:
+	static void Draw(GameObject* go);
+	//void DrawBatched(GameObject* gos);
 };
 
 #endif // _RENDERER_H
