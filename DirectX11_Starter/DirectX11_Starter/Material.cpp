@@ -3,6 +3,15 @@
 // Static variables
 std::map<std::wstring, ID3D11PixelShader*> Material::_pixelShaders;
 std::map<std::wstring, ID3D11VertexShader*> Material::_vertexShaders;
+std::map<std::wstring, ID3D11InputLayout*> Material::_inputLayouts;
+std::map<std::wstring, ID3D11ShaderResourceView*> Material::_textures;
+std::map<std::wstring, ID3D11SamplerState*> Material::_textureSamplers;
+
+ID3D11PixelShader* Material::currentPixelShader = nullptr;
+ID3D11VertexShader* Material::currentVertexShader = nullptr;
+ID3D11InputLayout* Material::currentInputLayout = nullptr;
+ID3D11ShaderResourceView* Material::currentTexture = nullptr;
+ID3D11SamplerState* Material::currentTextureSampler = nullptr;
 
 Material::Material(){
 	LoadVertexShader(L"../Resources/Shaders/TexturedVertexShader.cso");
@@ -42,17 +51,34 @@ void Material::SetInputAssemblerOptions(){
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
 	// Set the current vertex and pixel shaders, as well the constant buffer for the vert shader
-	deviceContext->VSSetShader(vertexShader, NULL, 0);
+	if(vertexShader != currentVertexShader){
+		currentVertexShader = vertexShader;
+		deviceContext->VSSetShader(vertexShader, NULL, 0);
+	}
+
 	deviceContext->VSSetConstantBuffers(
 		0,	// Corresponds to the constant buffer's register in the vertex shader
 		1, 
 		&vsConstantBuffer);
-	deviceContext->PSSetShader(pixelShader, NULL, 0);
 
-	deviceContext->PSSetShaderResources(0,1,&texture);
-	deviceContext->PSSetSamplers(0,1,&textureSamplerState);
+	if(pixelShader != currentPixelShader){
+		currentPixelShader = pixelShader;
+		deviceContext->PSSetShader(pixelShader, NULL, 0);
+	}
 
-	deviceContext->IASetInputLayout(inputLayout);
+	if(texture != currentTexture){
+		currentTexture = texture;
+		deviceContext->PSSetShaderResources(0,1,&texture);
+	}
+	if(textureSamplerState != currentTextureSampler){
+		currentTextureSampler = textureSamplerState;
+		deviceContext->PSSetSamplers(0,1,&textureSamplerState);
+	}
+
+	if(inputLayout != currentInputLayout){
+		currentInputLayout = inputLayout;
+		deviceContext->IASetInputLayout(inputLayout);
+	}
 };
 
 void Material::LoadConstantBuffer(){
@@ -97,6 +123,9 @@ void Material::LoadPixelShader(std::wstring pShaderName){
 
 	// Clean up
 	ReleaseMacro(psBlob);
+
+	// Add it to the static list
+	_pixelShaders[pShaderName] = pixelShader;
 };
 
 // Loads shaders from compiled shader object (.cso) files, and uses the
@@ -107,6 +136,7 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 	// Check if the shader already exists
 	if(_vertexShaders.count(vShaderName)){
 		vertexShader = _vertexShaders[vShaderName];
+		inputLayout = _inputLayouts[vShaderName];
 		return;
 	}
 
@@ -150,9 +180,20 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 
 	// Clean up
 	ReleaseMacro(vsBlob);
+
+	// Add it to the static list
+	_vertexShaders[vShaderName] = vertexShader;
+	_inputLayouts[vShaderName] = inputLayout;
 };
 
 void Material::LoadTexture(std::wstring texName){
+	// Check if the texture already exists
+	if(_textures.count(texName)){
+		texture = _textures[texName];
+		textureSamplerState = _textureSamplers[texName];
+		return;
+	}
+
 	// Get the current device
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
 
@@ -171,4 +212,8 @@ void Material::LoadTexture(std::wstring texName){
     
 	//Create the Sample State
 	device->CreateSamplerState( &sampDesc, &textureSamplerState );
+
+	// Add it to the static list
+	_textures[texName] = texture;
+	_textureSamplers[texName] = textureSamplerState;
 };

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <DirectXMath.h>
+#include <random>
 #include "DXGame.h"
 #include "GameObject.h"
 #include "Camera.h"

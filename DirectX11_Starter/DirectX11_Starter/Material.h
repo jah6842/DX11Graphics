@@ -28,9 +28,21 @@ public:
 	void SetInputAssemblerOptions();
 
 private:
-
+	// Static containers so we don't end up with duplicates
 	static std::map<std::wstring, ID3D11PixelShader*> _pixelShaders;
+	static ID3D11PixelShader* currentPixelShader;
+
 	static std::map<std::wstring, ID3D11VertexShader*> _vertexShaders;
+	static ID3D11VertexShader* currentVertexShader;
+
+	static std::map<std::wstring, ID3D11InputLayout*> _inputLayouts;
+	static ID3D11InputLayout* currentInputLayout;
+
+	static std::map<std::wstring, ID3D11ShaderResourceView*> _textures;
+	static ID3D11ShaderResourceView* currentTexture;
+
+	static std::map<std::wstring, ID3D11SamplerState*> _textureSamplers;
+	static ID3D11SamplerState* currentTextureSampler;
 
 	void LoadVertexShader(std::wstring vShaderName);
 	void LoadPixelShader(std::wstring pShaderName);

@@ -114,12 +114,18 @@ void DemoGame::OnResize()
 // push it to the buffer on the device
 void DemoGame::UpdateScene(float dt)
 {
-	//material->SetBufferData(worldMatrix, viewMatrix, projectionMatrix);
-	for(int i = 0; i < NUM_GO; i++){
-		for(int j = 0; j < NUM_GO; j++){
-			for(int k = 0; k < NUM_GO; k++){
-				gameobjects[i * NUM_GO * NUM_GO + j * NUM_GO + k]->Update(dt);
-			}
+	if(GetAsyncKeyState(VK_ADD)){
+		std::random_device rd;
+		std::default_random_engine rnd(rd());
+		std::uniform_int_distribution<int> uInt(-50, 50);
+		GameObject* go = new GameObject();
+		go->transform.position = XMFLOAT3(uInt(rnd), uInt(rnd), uInt(rnd));
+		gameobjects.push_back(go);
+	}
+	if(GetAsyncKeyState(VK_SUBTRACT)){
+		if(gameobjects.size() > 0){
+			delete gameobjects.back();
+			gameobjects.pop_back();
 		}
 	}
 
@@ -132,6 +138,11 @@ void DemoGame::UpdateScene(float dt)
 		Camera::MainCamera._transform.position.x -= (speed * dt);
 	if(GetAsyncKeyState('D'))
 		Camera::MainCamera._transform.position.x += (speed * dt);
+
+	//material->SetBufferData(worldMatrix, viewMatrix, projectionMatrix);
+	for(int i = 0; i < gameobjects.size(); i++){
+		gameobjects[i]->Update(dt);
+	}
 
 	//Camera::MainCamera._transform.position.x += .0001f;
 }
@@ -149,12 +160,8 @@ void DemoGame::DrawScene()
 		1.0f,
 		0);
 
-	for(int i = 0; i < NUM_GO; i++){
-		for(int j = 0; j < NUM_GO; j++){
-			for(int k = 0; k < NUM_GO; k++){
-				gameobjects[i * NUM_GO * NUM_GO + j * NUM_GO + k]->Render();
-			}
-		}
+	for(int i = 0; i < gameobjects.size(); i++){
+		gameobjects[i]->Render();
 	}
 
 	// Present the buffer
