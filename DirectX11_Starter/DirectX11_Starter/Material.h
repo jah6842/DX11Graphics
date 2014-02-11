@@ -8,6 +8,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include "DXUtilities.h"
+#include "Vertex.h"
 
 using namespace DirectX;
 
@@ -21,12 +22,18 @@ struct VertexShaderConstantBuffer
 class Material {
 
 public:
+	// Load the default shaders
 	Material();
+	// Assumes vertex and pixel shaders have the same prefix, optional texture
+	Material(std::wstring shaderPrefix, UINT numTextures = 0, std::wstring textureName = L"");
+	// Load specific vertex and pixel shaders, optional texture
+	Material(std::wstring vShaderName, std::wstring pShaderName, UINT numTextures = 0, std::wstring textureName = L"");
 	~Material();
 
 	void SetBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p);
 	void SetInputAssemblerOptions();
 
+	// Cleanup all of our static objects
 	static void Cleanup();
 
 private:

@@ -38,10 +38,26 @@ void Material::Cleanup(){
 };
 
 Material::Material(){
-	LoadVertexShader(L"../Resources/Shaders/TexturedVertex.cso");
-	LoadPixelShader(L"../Resources/Shaders/TexturedPixel.cso");
+	LoadVertexShader(L"../Resources/Shaders/ColoredVertex.cso");
+	LoadPixelShader(L"../Resources/Shaders/ColoredPixel.cso");
 	LoadConstantBuffer();
-	LoadTexture(L"../Resources/Textures/texture.jpg");
+};
+
+// Assumes vertex and pixel shaders have the same prefix
+Material::Material(std::wstring shaderPrefix, UINT numTextures, std::wstring textureName){
+	LoadVertexShader(L"../Resources/Shaders/" + shaderPrefix + L"Vertex.cso");
+	LoadPixelShader(L"../Resources/Shaders/" + shaderPrefix + L"Pixel.cso");
+	LoadConstantBuffer();
+	if(numTextures > 0)
+		LoadTexture(L"../Resources/Textures/" + textureName);
+};
+
+Material::Material(std::wstring vShaderName, std::wstring pShaderName, UINT numTextures, std::wstring textureName){
+	LoadVertexShader(vShaderName);
+	LoadPixelShader(pShaderName);
+	LoadConstantBuffer();
+	if(numTextures > 0)
+		LoadTexture(L"../Resources/Textures/" + textureName);
 };
 
 Material::~Material(){
@@ -164,22 +180,6 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 		return;
 	}
 
-	// Set up the vertex layout description
-	// This has to match the vertex input layout in the vertex shader
-	// We can't set up the input layout yet since we need the actual vert shader
-	/*
-	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,	D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};*/
-
-	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
-	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },  
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },  
-	};
-
 	// Get the current device
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
 
@@ -193,11 +193,26 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 		vsBlob->GetBufferSize(),
 		NULL,
 		&vertexShader));
+	
+	D3D11_INPUT_ELEMENT_DESC* description = nullptr;
+	UINT descriptionSize = 0;
+
+	if(vShaderName.find(L"Colored") != std::wstring::npos){
+		description = VERTEX_DESCRIPTION_POS_COLOR;
+		descriptionSize = 2;
+	}
+	if(vShaderName.find(L"Textured") != std::wstring::npos){
+		description = VERTEX_DESCRIPTION_POS_UV;
+		descriptionSize = 2;
+	}
+
+	assert(description != nullptr);
+	assert(descriptionSize != 0);
 
 	// Before cleaning up the data, create the input layout
 	HR(device->CreateInputLayout(
-		vertexDesc,
-		ARRAYSIZE(vertexDesc),
+		description,
+		descriptionSize,
 		vsBlob->GetBufferPointer(),
 		vsBlob->GetBufferSize(),
 		&inputLayout));

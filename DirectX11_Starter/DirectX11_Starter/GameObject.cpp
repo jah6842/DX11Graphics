@@ -4,7 +4,12 @@ GameObject::GameObject(){
 	//mesh = L"";
 	//material = L"mat_Default";
 
-	material = new Material();
+	static bool flipFlop = false;
+	if(flipFlop)
+		material = new Material(L"Textured", 1, L"texture.jpg");
+	else
+		material = new Material();
+	flipFlop = !flipFlop;
 
 	// Set up the vertices
 	XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -13,16 +18,17 @@ GameObject::GameObject(){
 
 	/* QUAD */
 	/*
-	Vertex vertices[] = 
+	Vertex_POS_COLOR vertices[] = 
 	{
-		{ XMFLOAT3(-1.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(+1.0f, -1.0f, +0.0f), red },
-		{ XMFLOAT3(-1.0f, -1.0f, +0.0f), blue },
-		{ XMFLOAT3(+1.0f, +1.0f, +0.0f), blue }
+		Vertex_POS_COLOR( XMFLOAT3(-1.0f, +1.0f, +0.0f), red),
+		Vertex_POS_COLOR( XMFLOAT3(+1.0f, -1.0f, +0.0f), red),
+		Vertex_POS_COLOR( XMFLOAT3(-1.0f, -1.0f, +0.0f), blue),
+		Vertex_POS_COLOR( XMFLOAT3(+1.0f, +1.0f, +0.0f), blue)
 	};
 	UINT indices[] = { 0, 1, 2, 1, 0, 3 };
+	mesh = new Mesh(vertices, 4, VERTEX_TYPE_POS_COLOR, indices, 6);
 	*/
-	
+
 	// CUBE
 	Vertex_POS_UV vertices[] =
 	{
@@ -77,7 +83,7 @@ GameObject::GameObject(){
 		20, 21, 22,
 		20, 22, 23
 	};
-	
+
 	mesh = new Mesh(vertices, 24,VERTEX_TYPE_POS_UV, indices, 36);
 };
 

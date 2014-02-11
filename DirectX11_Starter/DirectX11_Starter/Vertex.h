@@ -14,6 +14,12 @@ enum VERTEX_TYPE
 };
 
 
+extern D3D11_INPUT_ELEMENT_DESC VERTEX_DESCRIPTION_POS_COLOR[];
+
+extern D3D11_INPUT_ELEMENT_DESC VERTEX_DESCRIPTION_POS_UV[];
+
+//http://www.rastertek.com/dx11tut37.html
+extern D3D11_INPUT_ELEMENT_DESC VERTEX_DESCRIPTION_POS_UV_INSTANCED[];
 
 // Vertex struct with position only
 struct Vertex_POS
@@ -62,6 +68,7 @@ namespace Vertex {
 		assert(vertexSize != 0);
 		return vertexSize;
 	};
+
 }
 
 
