@@ -1,6 +1,7 @@
 #include "GameObject.h"
 
 GameObject::GameObject(){
+	// TODO: REFER TO MESHES/MATERIALS BY THEIR NAME ONLY
 	//mesh = L"";
 	//material = L"mat_Default";
 
@@ -17,18 +18,19 @@ GameObject::GameObject(){
 	XMFLOAT4 blue	= XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
 	/* QUAD */
-	/*
-	Vertex_POS_COLOR vertices[] = 
-	{
-		Vertex_POS_COLOR( XMFLOAT3(-1.0f, +1.0f, +0.0f), red),
-		Vertex_POS_COLOR( XMFLOAT3(+1.0f, -1.0f, +0.0f), red),
-		Vertex_POS_COLOR( XMFLOAT3(-1.0f, -1.0f, +0.0f), blue),
-		Vertex_POS_COLOR( XMFLOAT3(+1.0f, +1.0f, +0.0f), blue)
-	};
-	UINT indices[] = { 0, 1, 2, 1, 0, 3 };
-	mesh = new Mesh(vertices, 4, VERTEX_TYPE_POS_COLOR, indices, 6);
-	*/
-
+	if(flipFlop){
+		Vertex_POS_COLOR vertices[] = 
+		{
+			Vertex_POS_COLOR( XMFLOAT3(-1.0f, +1.0f, +0.0f), red),
+			Vertex_POS_COLOR( XMFLOAT3(+1.0f, -1.0f, +0.0f), red),
+			Vertex_POS_COLOR( XMFLOAT3(-1.0f, -1.0f, +0.0f), blue),
+			Vertex_POS_COLOR( XMFLOAT3(+1.0f, +1.0f, +0.0f), blue)
+		};
+		UINT indices[] = { 0, 1, 2, 1, 0, 3 };
+		mesh = new Mesh(vertices, 4, VERTEX_TYPE_POS_COLOR, indices, 6);
+		return;
+	}
+	
 	// CUBE
 	Vertex_POS_UV vertices[] =
 	{
@@ -85,6 +87,7 @@ GameObject::GameObject(){
 	};
 
 	mesh = new Mesh(vertices, 24,VERTEX_TYPE_POS_UV, indices, 36);
+	
 };
 
 void GameObject::Update(float dt){
