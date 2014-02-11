@@ -24,38 +24,38 @@ GameObject::GameObject(){
 	*/
 	
 	// CUBE
-	Vertex vertices[] =
+	Vertex_POS_UV vertices[] =
 	{
 		// Front Face
-		Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		Vertex(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
-		Vertex( 1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
-		Vertex( 1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
+		Vertex_POS_UV(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+		Vertex_POS_UV(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
+		Vertex_POS_UV( 1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
+		Vertex_POS_UV( 1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
 		// Back Face
-		Vertex(-1.0f, -1.0f, 1.0f, 1.0f, 1.0f),
-		Vertex( 1.0f, -1.0f, 1.0f, 0.0f, 1.0f),
-		Vertex( 1.0f,  1.0f, 1.0f, 0.0f, 0.0f),
-		Vertex(-1.0f,  1.0f, 1.0f, 1.0f, 0.0f),
+		Vertex_POS_UV(-1.0f, -1.0f, 1.0f, 1.0f, 1.0f),
+		Vertex_POS_UV( 1.0f, -1.0f, 1.0f, 0.0f, 1.0f),
+		Vertex_POS_UV( 1.0f,  1.0f, 1.0f, 0.0f, 0.0f),
+		Vertex_POS_UV(-1.0f,  1.0f, 1.0f, 1.0f, 0.0f),
 		// Top Face
-		Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f),
-		Vertex(-1.0f, 1.0f,  1.0f, 0.0f, 0.0f),
-		Vertex( 1.0f, 1.0f,  1.0f, 1.0f, 0.0f),
-		Vertex( 1.0f, 1.0f, -1.0f, 1.0f, 1.0f),
+		Vertex_POS_UV(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f),
+		Vertex_POS_UV(-1.0f, 1.0f,  1.0f, 0.0f, 0.0f),
+		Vertex_POS_UV( 1.0f, 1.0f,  1.0f, 1.0f, 0.0f),
+		Vertex_POS_UV( 1.0f, 1.0f, -1.0f, 1.0f, 1.0f),
 		// Bottom Face
-		Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
-		Vertex( 1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		Vertex( 1.0f, -1.0f,  1.0f, 0.0f, 0.0f),
-		Vertex(-1.0f, -1.0f,  1.0f, 1.0f, 0.0f),
+		Vertex_POS_UV(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
+		Vertex_POS_UV( 1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+		Vertex_POS_UV( 1.0f, -1.0f,  1.0f, 0.0f, 0.0f),
+		Vertex_POS_UV(-1.0f, -1.0f,  1.0f, 1.0f, 0.0f),
 		// Left Face
-		Vertex(-1.0f, -1.0f,  1.0f, 0.0f, 1.0f),
-		Vertex(-1.0f,  1.0f,  1.0f, 0.0f, 0.0f),
-		Vertex(-1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
-		Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
+		Vertex_POS_UV(-1.0f, -1.0f,  1.0f, 0.0f, 1.0f),
+		Vertex_POS_UV(-1.0f,  1.0f,  1.0f, 0.0f, 0.0f),
+		Vertex_POS_UV(-1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
+		Vertex_POS_UV(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
 		// Right Face
-		Vertex( 1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
-		Vertex( 1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
-		Vertex( 1.0f,  1.0f,  1.0f, 1.0f, 0.0f),
-		Vertex( 1.0f, -1.0f,  1.0f, 1.0f, 1.0f),
+		Vertex_POS_UV( 1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+		Vertex_POS_UV( 1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
+		Vertex_POS_UV( 1.0f,  1.0f,  1.0f, 1.0f, 0.0f),
+		Vertex_POS_UV( 1.0f, -1.0f,  1.0f, 1.0f, 1.0f),
 	};
 	UINT indices[] = {
 		// Front Face
@@ -78,7 +78,7 @@ GameObject::GameObject(){
 		20, 22, 23
 	};
 	
-	mesh = new Mesh(vertices, 24, indices, 36);
+	mesh = new Mesh(vertices, 24,VERTEX_TYPE_POS_UV, indices, 36);
 };
 
 void GameObject::Update(float dt){
@@ -89,7 +89,6 @@ void GameObject::Update(float dt){
 	material->SetBufferData(transform.ModelMatrix(),
 		Camera::MainCamera.GetViewMatrix(),
 		Camera::MainCamera.GetProjectionMatrix());
-
 };
 
 /*

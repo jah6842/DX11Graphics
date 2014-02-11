@@ -6,19 +6,21 @@ Mesh::Mesh(){
 };
 
 // Construct a mesh with vertices, assume clockwise indices
-Mesh::Mesh(Vertex* vertices, UINT numVertices){
+Mesh::Mesh(void* vertices, UINT numVertices, VERTEX_TYPE vertexType){
+	_vertexType = vertexType;
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	SetVertexBuffer(vertices, numVertices);
+	SetVertexBuffer(vertices, numVertices, vertexType);
 };
 
 // Construct a mesh with vertices, custom indices
-Mesh::Mesh(Vertex* vertices, UINT numVertices, UINT* indices, UINT numIndices){
+Mesh::Mesh(void* vertices, UINT numVertices, VERTEX_TYPE vertexType, UINT* indices, UINT numIndices){
+	_vertexType = vertexType;
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	SetVertexBuffer(vertices, numVertices);
+	SetVertexBuffer(vertices, numVertices, _vertexType);
 	SetIndexBuffer(indices, numIndices);
 };
 
-void Mesh::SetVertexBuffer(Vertex* vertices, UINT numVertices){
+void Mesh::SetVertexBuffer(void* vertices, UINT numVertices, VERTEX_TYPE vertexType){
 	// Set the vertex count
 	_numVertices = numVertices;
 
@@ -28,7 +30,7 @@ void Mesh::SetVertexBuffer(Vertex* vertices, UINT numVertices){
 	// Create the vertex buffer
 	D3D11_BUFFER_DESC vbd;
     vbd.Usage					= D3D11_USAGE_IMMUTABLE;
-    vbd.ByteWidth				= sizeof(Vertex) * numVertices; // Number of vertices
+	vbd.ByteWidth				= Vertex::VertexSize(vertexType) * numVertices; // Number of vertices
     vbd.BindFlags				= D3D11_BIND_VERTEX_BUFFER;
     vbd.CPUAccessFlags			= 0;
     vbd.MiscFlags				= 0;
@@ -67,7 +69,7 @@ void Mesh::SetInputAssemblerOptions(){
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
 	// Set buffers in the input assembler
-	UINT stride = sizeof(Vertex);
+	UINT stride = Vertex::VertexSize(_vertexType);
 	UINT offset = 0;
 	// Set the current vertex buffer
 	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);

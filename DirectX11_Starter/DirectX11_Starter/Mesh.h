@@ -14,12 +14,12 @@ public:
 	// Construct a mesh without vertices
 	Mesh();
 	// Construct a mesh with vertices, assume clockwise indices
-	Mesh(Vertex* vertices, UINT numVertices);
+	Mesh(void* vertices, UINT numVertices, VERTEX_TYPE vertexType);
 	// Construct a mesh with vertices, custom indices
-	Mesh(Vertex* vertices, UINT numVertices, UINT* indices, UINT numIndices);
+	Mesh(void* vertices, UINT numVertices, VERTEX_TYPE vertexType, UINT* indices, UINT numIndices);
 	~Mesh();
 
-	void SetVertexBuffer(Vertex* vertices, UINT numVertices);
+	void SetVertexBuffer(void* vertices, UINT numVertices, VERTEX_TYPE t);
 	void SetIndexBuffer(UINT* indices, UINT numIndices);
 	void SetTopology(D3D11_PRIMITIVE_TOPOLOGY topo);
 
@@ -31,6 +31,7 @@ public:
 private:
 	ID3D11Buffer* _vertexBuffer;
 	UINT _numVertices;
+	VERTEX_TYPE _vertexType;
 	ID3D11Buffer* _indexBuffer;
 	UINT _numIndices;
 
