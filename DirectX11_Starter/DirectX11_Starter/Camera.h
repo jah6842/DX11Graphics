@@ -13,6 +13,7 @@ public:
 	Camera(UINT width, UINT height, float fov = 60.0f, float nearClip = 0.1f, float farClip = 1000.0f);
 	~Camera();
 
+	static void Update(float dt);
 	void Resize(UINT width, UINT height);
 	XMFLOAT4X4 GetProjectionMatrix();
 	XMFLOAT4X4 GetViewMatrix();
@@ -32,6 +33,7 @@ private:
 	UINT _height;
 
 	void RecalcProjMatrix();
+	void RecalcViewMatrix();
 };
 
 #endif // _CAMERA_H

@@ -141,6 +141,8 @@ void DemoGame::UpdateScene(float dt)
 	if(GetAsyncKeyState('D'))
 		Camera::MainCamera._transform.position.x += (speed * dt);
 
+	Camera::MainCamera.Update(dt);
+
 	//material->SetBufferData(worldMatrix, viewMatrix, projectionMatrix);
 	for(int i = 0; i < gameobjects.size(); i++){
 		gameobjects[i]->Update(dt);

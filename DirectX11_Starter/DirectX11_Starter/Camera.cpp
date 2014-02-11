@@ -22,20 +22,25 @@ Camera::~Camera(){
 
 };
 
+void Camera::Update(float dt){
+	MainCamera.RecalcViewMatrix();
+};
+
 XMFLOAT4X4 Camera::GetProjectionMatrix(){
 	return _projection;
 };
 
 XMFLOAT4X4 Camera::GetViewMatrix(){
+	return _view;
+};
+
+void Camera::RecalcViewMatrix(){
 	// Set up view matrix (camera)
-	// In an actual game, update this when the camera moves (so every frame)
 	XMVECTOR position	= XMVectorSet(_transform.position.x, _transform.position.y, _transform.position.z, 0);
 	XMVECTOR target		= XMVectorSet(0, 0, 1, 0);
 	XMVECTOR up			= XMVectorSet(0, 1, 0, 0);
 	XMMATRIX V			= XMMatrixLookToLH(position, target, up);
 	XMStoreFloat4x4(&_view, XMMatrixTranspose(V));
-
-	return _view;
 };
 
 void Camera::RecalcProjMatrix(){

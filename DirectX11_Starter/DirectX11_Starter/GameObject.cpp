@@ -1,7 +1,7 @@
 #include "GameObject.h"
 
 GameObject::GameObject(){
-	// TODO: REFER TO MESHES/MATERIALS BY THEIR NAME ONLY
+	// TODO: REFER TO MESHES/MATERIALS BY THEIR NAME ONLY?
 	//mesh = L"";
 	//material = L"mat_Default";
 
