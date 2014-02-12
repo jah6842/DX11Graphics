@@ -3,19 +3,24 @@
 
 #include <d3d11.h>
 #include <map>
+#include <vector>
+#include <algorithm>
 
-#include "Mesh.h"
-#include "Material.h"
 #include "GameObject.h"
 
+class GameObject;
+
 class Renderer {
-	static std::map<std::wstring, Mesh> meshes;
-	static std::map<std::wstring, Material> materials;
+private:
+	static std::vector<GameObject*> registeredGOs;
 
 	Renderer();
 	~Renderer();
 public:
-	static void Draw(GameObject* go);
+	static void Draw();
+	static void RegisterGameObject(GameObject* go);
+	static void UnRegisterGameObject(GameObject* go);
+
 	//void DrawBatched(GameObject* gos);
 };
 

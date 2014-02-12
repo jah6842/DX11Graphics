@@ -6,7 +6,7 @@
 #include "Material.h"
 #include "Transform.h"
 #include "Camera.h"
-//#include "Renderer.h"
+#include "Renderer.h"
 
 class GameObject {
 

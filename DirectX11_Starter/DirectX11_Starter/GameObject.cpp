@@ -5,6 +5,8 @@ GameObject::GameObject(){
 	//mesh = L"";
 	//material = L"mat_Default";
 
+	Renderer::RegisterGameObject(this);
+
 	static bool flipFlop = false;
 	if(flipFlop)
 		material = new Material(L"Textured", 1, L"texture.jpg");
@@ -111,6 +113,8 @@ GameObject::~GameObject(){
 		delete mesh;
 	if(material != nullptr)
 		delete material;
+
+	Renderer::UnRegisterGameObject(this);
 };
 
 /*

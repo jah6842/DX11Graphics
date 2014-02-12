@@ -166,8 +166,9 @@ void DemoGame::DrawScene()
 
 	for(int i = 0; i < gameobjects.size(); i++){
 		//gameobjects[i]->Render();
-		Renderer::Draw(gameobjects[i]);
 	}
+
+	Renderer::Draw();
 
 	// Present the buffer
 	HR(swapChain->Present(0, 0));
