@@ -8,8 +8,14 @@ GameObject::GameObject(){
 	Renderer::RegisterGameObject(this);
 
 	static bool flipFlop = false;
-	if(flipFlop)
-		material = new Material(L"Textured", 1, L"texture.jpg");
+	static bool fwipFwap = false;
+	if(flipFlop){
+		if(fwipFwap)
+			material = new Material(L"Textured", 1, L"texture.jpg");
+		else
+			material = new Material(L"Textured", 1, L"texture2.png");
+		fwipFwap = !fwipFwap;
+	}
 	else
 		material = new Material();
 	flipFlop = !flipFlop;
