@@ -11,9 +11,9 @@ GameObject::GameObject(){
 	static bool fwipFwap = false;
 	if(flipFlop){
 		if(fwipFwap)
-			material = new Material(L"Textured", 1, L"texture.jpg");
+			material = new Material(L"Textured", 1, L"desert-texture.jpg");
 		else
-			material = new Material(L"Textured", 1, L"texture2.png");
+			material = new Material(L"Textured", 1, L"texture.jpg");
 		fwipFwap = !fwipFwap;
 	}
 	else
