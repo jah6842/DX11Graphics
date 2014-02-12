@@ -237,9 +237,6 @@ void Material::LoadTexture(std::wstring texName){
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
-	// OLD D3DX Texture Loading
-	//D3DX11CreateShaderResourceViewFromFile( device, texName.c_str(), NULL, NULL, &texture, NULL );
-
 	// NEW DirectXTK Texture Loading
 	CreateWICTextureFromFile(device, deviceContext, texName.c_str(), NULL, &texture);
 
