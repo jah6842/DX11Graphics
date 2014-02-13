@@ -53,6 +53,9 @@ private:
 	static std::map<std::wstring, ID3D11SamplerState*> _textureSamplers;
 	static ID3D11SamplerState* currentTextureSampler;
 
+	static ID3D11Buffer* currentConstantBuffer;
+
+
 	void LoadVertexShader(std::wstring vShaderName);
 	void LoadPixelShader(std::wstring pShaderName);
 	void LoadConstantBuffer();
@@ -67,7 +70,7 @@ private:
 	// A few more odds and ends we'll need
 	ID3D11InputLayout* inputLayout;
 	ID3D11Buffer* vsConstantBuffer;
-	VertexShaderConstantBuffer vsConstantBufferData;
+	//VertexShaderConstantBuffer vsConstantBufferData;
 };
 
 #endif // _MATERIAL_H

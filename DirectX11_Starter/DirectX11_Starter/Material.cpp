@@ -12,6 +12,7 @@ ID3D11VertexShader* Material::currentVertexShader = nullptr;
 ID3D11InputLayout* Material::currentInputLayout = nullptr;
 ID3D11ShaderResourceView* Material::currentTexture = nullptr;
 ID3D11SamplerState* Material::currentTextureSampler = nullptr;
+ID3D11Buffer* Material::currentConstantBuffer = nullptr;
 
 // Static class to cleanup all necessary items
 void Material::Cleanup(){
@@ -35,6 +36,8 @@ void Material::Cleanup(){
 	for(texSampItr iterator = _textureSamplers.begin(); iterator != _textureSamplers.end(); iterator++) {
 		ReleaseMacro(iterator->second);
 	}
+
+	ReleaseMacro(currentConstantBuffer);
 };
 
 Material::Material(){
@@ -63,7 +66,7 @@ Material::Material(std::wstring vShaderName, std::wstring pShaderName, UINT numT
 Material::~Material(){
 	//ReleaseMacro(vertexShader);
 	//ReleaseMacro(pixelShader);
-	ReleaseMacro(vsConstantBuffer);
+	//ReleaseMacro(vsConstantBuffer);
 	//ReleaseMacro(inputLayout);
 	//ReleaseMacro(texture);
 	//ReleaseMacro(textureSamplerState);
@@ -74,6 +77,7 @@ void Material::SetBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p){
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
 	// Update local constant buffer data
+	VertexShaderConstantBuffer vsConstantBufferData;
 	vsConstantBufferData.world = w;
 	vsConstantBufferData.view = v;
 	vsConstantBufferData.projection = p;
@@ -98,10 +102,13 @@ void Material::SetInputAssemblerOptions(){
 		deviceContext->VSSetShader(vertexShader, NULL, 0);
 	}
 
-	deviceContext->VSSetConstantBuffers(
-		0,	// Corresponds to the constant buffer's register in the vertex shader
-		1, 
-		&vsConstantBuffer);
+	if(vsConstantBuffer != currentConstantBuffer){
+		deviceContext->VSSetConstantBuffers(
+			0,	// Corresponds to the constant buffer's register in the vertex shader
+			1, 
+			&vsConstantBuffer);
+		currentConstantBuffer = vsConstantBuffer;
+	}
 
 	if(pixelShader != currentPixelShader){
 		currentPixelShader = pixelShader;
@@ -127,7 +134,7 @@ void Material::LoadConstantBuffer(){
 
 	// Constant buffers ----------------------------------------
 	D3D11_BUFFER_DESC cBufferDesc;
-	cBufferDesc.ByteWidth			= sizeof(vsConstantBufferData);
+	cBufferDesc.ByteWidth			= sizeof(VertexShaderConstantBuffer);
 	cBufferDesc.Usage				= D3D11_USAGE_DEFAULT;
 	cBufferDesc.BindFlags			= D3D11_BIND_CONSTANT_BUFFER;
 	cBufferDesc.CPUAccessFlags		= 0;

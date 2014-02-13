@@ -16,7 +16,7 @@ InstanceType* instances;
 D3D11_BUFFER_DESC instanceBufferDesc;
 D3D11_SUBRESOURCE_DATA instanceData;
 
-UINT numInstances = 20*20*20;
+UINT numInstances = 30*30*30;
 
 void Renderer::Draw(){
 

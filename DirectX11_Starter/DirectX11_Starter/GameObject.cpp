@@ -7,7 +7,8 @@ GameObject::GameObject(){
 
 	Renderer::RegisterGameObject(this);
 
-	material = new Material(L"TexturedInstanced", 1, L"desert-texture.jpg");
+	material = new Material(L"TexturedInstanced", 1, L"texture2.png");
+
 	mesh = new Mesh(L"StandardCube");
 
 	// Set up the vertices
@@ -30,8 +31,6 @@ GameObject::GameObject(){
 		return;
 	}
 	*/
-
-	
 };
 
 void GameObject::Update(float dt){
