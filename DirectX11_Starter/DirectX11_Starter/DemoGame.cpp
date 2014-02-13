@@ -34,6 +34,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	// Enable run-time memory check for debug builds.
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+
+	AllocConsole();
+	AttachConsole(GetCurrentProcessId());
+	freopen("CON", "w", stdout);
 #endif
 
 	// Make the game, initialize and run

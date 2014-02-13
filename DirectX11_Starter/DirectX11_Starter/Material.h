@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include "DXUtilities.h"
 #include "Vertex.h"
+#include <iostream>
 
 using namespace DirectX;
 
