@@ -27,6 +27,10 @@ public:
 
 	UINT IndexCount();
 	UINT VertexCount();
+	VERTEX_TYPE VertexType();
+	ID3D11Buffer* VertexBuffer();
+	ID3D11Buffer* IndexBuffer();
+	D3D_PRIMITIVE_TOPOLOGY Topology();
 
 private:
 	ID3D11Buffer* _vertexBuffer;

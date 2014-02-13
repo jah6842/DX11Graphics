@@ -7,18 +7,7 @@ GameObject::GameObject(){
 
 	Renderer::RegisterGameObject(this);
 
-	static bool flipFlop = false;
-	static bool fwipFwap = false;
-	if(flipFlop){
-		if(fwipFwap)
-			material = new Material(L"Textured", 1, L"desert-texture.jpg");
-		else
-			material = new Material(L"Textured", 1, L"texture.jpg");
-		fwipFwap = !fwipFwap;
-	}
-	else
-		material = new Material();
-	flipFlop = !flipFlop;
+	material = new Material(L"TexturedInstanced", 1, L"desert-texture.jpg");
 
 	// Set up the vertices
 	XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -26,6 +15,7 @@ GameObject::GameObject(){
 	XMFLOAT4 blue	= XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
 	/* QUAD */
+	/*
 	if(flipFlop){
 		Vertex_POS_COLOR vertices[] = 
 		{
@@ -38,6 +28,7 @@ GameObject::GameObject(){
 		mesh = new Mesh(vertices, 4, VERTEX_TYPE_POS_COLOR, indices, 6);
 		return;
 	}
+	*/
 	
 	// CUBE
 	Vertex_POS_UV vertices[] =
@@ -103,9 +94,9 @@ void GameObject::Update(float dt){
 	transform.rotation.z += XMConvertToRadians(60.0f) * dt;
 	transform.rotation.y += XMConvertToRadians(60.0f) * dt;
 
-	material->SetBufferData(transform.ModelMatrix(),
-		Camera::MainCamera.GetViewMatrix(),
-		Camera::MainCamera.GetProjectionMatrix());
+	//material->SetBufferData(transform.Identity().ModelMatrix(),
+	//	Camera::MainCamera.GetViewMatrix(),
+	//	Camera::MainCamera.GetProjectionMatrix());
 };
 
 /*

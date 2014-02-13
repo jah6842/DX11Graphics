@@ -87,6 +87,22 @@ UINT Mesh::VertexCount(){
 	return _numVertices;
 };
 
+VERTEX_TYPE Mesh::VertexType(){
+	return _vertexType;
+};
+
+ID3D11Buffer* Mesh::VertexBuffer(){
+	return _vertexBuffer;
+};
+
+ID3D11Buffer* Mesh::IndexBuffer(){
+	return _indexBuffer;
+};
+
+D3D_PRIMITIVE_TOPOLOGY Mesh::Topology(){
+	return topology;
+};
+
 Mesh::~Mesh(){
 	ReleaseMacro(_vertexBuffer);
 	ReleaseMacro(_indexBuffer);
