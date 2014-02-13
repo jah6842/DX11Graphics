@@ -5,25 +5,34 @@
 #include <d3d11.h>
 #include "Vertex.h"
 #include "DXUtilities.h"
+#include <map>
+#include <string>
 
 using namespace DirectX;
 
 class Mesh {
-
 public:
+	static std::map<std::wstring, Mesh*> meshes;
+
 	// Construct a mesh without vertices
 	Mesh();
+
+	// Construct a mesh by name
+	Mesh(std::wstring meshName);
+	
 	// Construct a mesh with vertices, assume clockwise indices
-	Mesh(void* vertices, UINT numVertices, VERTEX_TYPE vertexType);
+	void ConstructMesh(std::wstring meshName, void* vertices, UINT numVertices, VERTEX_TYPE vertexType);
+
 	// Construct a mesh with vertices, custom indices
-	Mesh(void* vertices, UINT numVertices, VERTEX_TYPE vertexType, UINT* indices, UINT numIndices);
+	void ConstructMesh(std::wstring meshName, void* vertices, UINT numVertices, VERTEX_TYPE vertexType, UINT* indices, UINT numIndices);
+	
 	~Mesh();
+
+	void CreateMeshFromModel(std::wstring modelName);
 
 	void SetVertexBuffer(void* vertices, UINT numVertices, VERTEX_TYPE t);
 	void SetIndexBuffer(UINT* indices, UINT numIndices);
 	void SetTopology(D3D11_PRIMITIVE_TOPOLOGY topo);
-
-	void SetInputAssemblerOptions();
 
 	UINT IndexCount();
 	UINT VertexCount();
@@ -41,7 +50,62 @@ private:
 
 	// How is the data laid out? 
 	D3D_PRIMITIVE_TOPOLOGY topology; // default is D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST 
+
+
 };
 
+static Vertex_POS_UV StandardCubeVertices[24] =
+{
+	// Front Face
+	Vertex_POS_UV(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+	Vertex_POS_UV(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
+	Vertex_POS_UV( 1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
+	Vertex_POS_UV( 1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
+	// Back Face
+	Vertex_POS_UV(-1.0f, -1.0f, 1.0f, 1.0f, 1.0f),
+	Vertex_POS_UV( 1.0f, -1.0f, 1.0f, 0.0f, 1.0f),
+	Vertex_POS_UV( 1.0f,  1.0f, 1.0f, 0.0f, 0.0f),
+	Vertex_POS_UV(-1.0f,  1.0f, 1.0f, 1.0f, 0.0f),
+	// Top Face
+	Vertex_POS_UV(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f),
+	Vertex_POS_UV(-1.0f, 1.0f,  1.0f, 0.0f, 0.0f),
+	Vertex_POS_UV( 1.0f, 1.0f,  1.0f, 1.0f, 0.0f),
+	Vertex_POS_UV( 1.0f, 1.0f, -1.0f, 1.0f, 1.0f),
+	// Bottom Face
+	Vertex_POS_UV(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
+	Vertex_POS_UV( 1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+	Vertex_POS_UV( 1.0f, -1.0f,  1.0f, 0.0f, 0.0f),
+	Vertex_POS_UV(-1.0f, -1.0f,  1.0f, 1.0f, 0.0f),
+	// Left Face
+	Vertex_POS_UV(-1.0f, -1.0f,  1.0f, 0.0f, 1.0f),
+	Vertex_POS_UV(-1.0f,  1.0f,  1.0f, 0.0f, 0.0f),
+	Vertex_POS_UV(-1.0f,  1.0f, -1.0f, 1.0f, 0.0f),
+	Vertex_POS_UV(-1.0f, -1.0f, -1.0f, 1.0f, 1.0f),
+	// Right Face
+	Vertex_POS_UV( 1.0f, -1.0f, -1.0f, 0.0f, 1.0f),
+	Vertex_POS_UV( 1.0f,  1.0f, -1.0f, 0.0f, 0.0f),
+	Vertex_POS_UV( 1.0f,  1.0f,  1.0f, 1.0f, 0.0f),
+	Vertex_POS_UV( 1.0f, -1.0f,  1.0f, 1.0f, 1.0f),
+};
+static UINT StandardCubeIndices[] = {
+	// Front Face
+	0,  1,  2,
+	0,  2,  3,
+	// Back Face
+	4,  5,  6,
+	4,  6,  7,
+	// Top Face
+	8,  9, 10,
+	8, 10, 11,
+	// Bottom Face
+	12, 13, 14,
+	12, 14, 15,
+	// Left Face
+	16, 17, 18,
+	16, 18, 19,
+	// Right Face
+	20, 21, 22,
+	20, 22, 23
+};
 
 #endif // _MESH_H

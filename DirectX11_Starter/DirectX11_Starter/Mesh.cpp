@@ -1,23 +1,50 @@
 #include "Mesh.h"
 
+std::map<std::wstring, Mesh*> Mesh::meshes;
+
 // Construct a mesh without vertices
 Mesh::Mesh(){
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 };
 
+// Construct a mesh by name
+Mesh::Mesh(std::wstring meshName){
+	// Check if the mesh already exists
+	
+	if(meshes.count(meshName)){
+		_vertexBuffer = meshes[meshName]->_vertexBuffer;
+		_numVertices = meshes[meshName]->VertexCount();
+		_vertexType = meshes[meshName]->VertexType();
+		_indexBuffer = meshes[meshName]->IndexBuffer();
+		_numIndices = meshes[meshName]->IndexCount();
+		topology = meshes[meshName]->Topology();
+	}
+	
+	if(meshName == L"StandardCube")
+	{
+		ConstructMesh(L"StandardCube", StandardCubeVertices, 24, VERTEX_TYPE_POS_UV, StandardCubeIndices, 36);
+		meshes[L"StandardCube"] = this;
+	}
+
+};
+
 // Construct a mesh with vertices, assume clockwise indices
-Mesh::Mesh(void* vertices, UINT numVertices, VERTEX_TYPE vertexType){
+void Mesh::ConstructMesh(std::wstring meshName, void* vertices, UINT numVertices, VERTEX_TYPE vertexType){
 	_vertexType = vertexType;
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	SetVertexBuffer(vertices, numVertices, vertexType);
 };
 
 // Construct a mesh with vertices, custom indices
-Mesh::Mesh(void* vertices, UINT numVertices, VERTEX_TYPE vertexType, UINT* indices, UINT numIndices){
+void Mesh::ConstructMesh(std::wstring meshName, void* vertices, UINT numVertices, VERTEX_TYPE vertexType, UINT* indices, UINT numIndices){
 	_vertexType = vertexType;
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	SetVertexBuffer(vertices, numVertices, _vertexType);
 	SetIndexBuffer(indices, numIndices);
+};
+
+void Mesh::CreateMeshFromModel(std::wstring modelName){
+
 };
 
 void Mesh::SetVertexBuffer(void* vertices, UINT numVertices, VERTEX_TYPE vertexType){
@@ -62,21 +89,6 @@ void Mesh::SetIndexBuffer(UINT* indices, UINT numIndices){
 
 void Mesh::SetTopology(D3D11_PRIMITIVE_TOPOLOGY topo){
 	topology = topo;
-};
-
-void Mesh::SetInputAssemblerOptions(){
-	// Get the current Device Context
-	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
-
-	// Set buffers in the input assembler
-	UINT stride = Vertex::VertexSize(_vertexType);
-	UINT offset = 0;
-	// Set the current vertex buffer
-	deviceContext->IASetVertexBuffers(0, 1, &_vertexBuffer, &stride, &offset);
-	// Set the current index buffer
-	deviceContext->IASetIndexBuffer(_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	// Set the topology
-	deviceContext->IASetPrimitiveTopology(topology);
 };
 
 UINT Mesh::IndexCount(){

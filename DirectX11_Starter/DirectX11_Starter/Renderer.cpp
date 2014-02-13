@@ -16,7 +16,7 @@ InstanceType* instances;
 D3D11_BUFFER_DESC instanceBufferDesc;
 D3D11_SUBRESOURCE_DATA instanceData;
 
-UINT numInstances = 40*40*40;
+UINT numInstances = 20*20*20;
 
 void Renderer::Draw(){
 
@@ -37,12 +37,6 @@ void Renderer::Draw(){
 	int i = 0;
 	for(auto &go : registeredGOs){
 		instances[i].position = go->transform.position;
-
-		// Set mesh-related buffers in the input assembler
-		//go->mesh->SetInputAssemblerOptions();
-
-		// Set material-related buffers in the input assembler
-		
 		i++;
 	}
 
@@ -87,7 +81,6 @@ void Renderer::Draw(){
 	deviceContext->IASetIndexBuffer(registeredGOs[0]->mesh->IndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 	// Set the topology
 	deviceContext->IASetPrimitiveTopology(registeredGOs[0]->mesh->Topology());
-
 	
 	deviceContext->DrawIndexedInstanced(
 		registeredGOs[0]->mesh->IndexCount(),
@@ -95,15 +88,6 @@ void Renderer::Draw(){
 		0,
 		0,
 		1);
-	
-
-	/*
-	deviceContext->DrawInstanced(
-		registeredGOs[0]->mesh->VertexCount(),
-		8*8*8,
-		0,
-		0);
-	*/
 
 	ReleaseMacro(instanceBuffer);
 	delete[] instances;
