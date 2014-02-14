@@ -16,7 +16,7 @@ InstanceType* instances;
 D3D11_BUFFER_DESC instanceBufferDesc;
 D3D11_SUBRESOURCE_DATA instanceData;
 
-UINT numInstances = 15*15*15;
+//UINT numInstances = 15*15*15;
 
 void Renderer::Draw(){
 
@@ -32,68 +32,98 @@ void Renderer::Draw(){
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
 
-	instances = new InstanceType[numInstances];
+	std::vector<GameObject*> openList = std::vector<GameObject*>(registeredGOs.size());
+	std::vector<GameObject*> renderList = std::vector<GameObject*>();
+	std::vector<Material*> seenMaterials = std::vector<Material*>();
 
-	int i = 0;
-	for(auto &go : registeredGOs){
-		instances[i].position = go->transform.position;
-		i++;
+	// Add all gameobjects to the open list
+	for(int i = 0; i < registeredGOs.size(); i++){
+		openList[i] = registeredGOs[i];
 	}
 
-	registeredGOs[0]->material->SetConstantBufferData(
-			//registeredGOs[0]->transform.ModelMatrix(),
-			Transform::Identity().ModelMatrix(),
-			Camera::MainCamera.GetViewMatrix(),
-			Camera::MainCamera.GetProjectionMatrix());
-	registeredGOs[0]->material->SetInputAssemblerOptions();
+	Material* currentRenderMaterial = nullptr;
+	// Get all gameobjects with a certain material and draw them
+	while(openList.size() > 0){
 
+		// Get the first material from the render list
+		currentRenderMaterial = openList[0]->material;
+		seenMaterials.push_back(currentRenderMaterial);
 
-	// Set up the description of the instance buffer.
-	instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	instanceBufferDesc.ByteWidth = sizeof(InstanceType) * numInstances;
-	instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	instanceBufferDesc.CPUAccessFlags = 0;
-	instanceBufferDesc.MiscFlags = 0;
-	instanceBufferDesc.StructureByteStride = 0;
+		// Set the proper input options for this material
+		openList[0]->material->SetConstantBufferData(
+				openList[0]->transform.ModelMatrix(), // Model matrix of the first object
+				//Transform::Identity().ModelMatrix(), // Model matrix of an identity matrix
+				Camera::MainCamera.GetViewMatrix(),
+				Camera::MainCamera.GetProjectionMatrix());
+		openList[0]->material->SetInputAssemblerOptions();
 
-	// Give the subresource structure a pointer to the instance data.
-	instanceData.pSysMem = instances;
-	instanceData.SysMemPitch = 0;
-	instanceData.SysMemSlicePitch = 0;
+		// Loop through the open list and get all of the objects with the 
+		// same material that we should add to the render list.
+		for(int i = 0; i < openList.size(); i++){
+			if(openList[i]->material == currentRenderMaterial){
+				renderList[i] = openList[i];
+				openList.erase(openList.begin() + i);
+				i--;
+			}
+		}
 
-	HR(device->CreateBuffer(&instanceBufferDesc, &instanceData, &instanceBuffer));
+		// Allocate memory for all of the instance data
+		instances = new InstanceType[renderList.size()];
 
-	// Set buffers in the input assembler
-	UINT strides[2];
-	UINT offsets[2];
-	ID3D11Buffer* bufferPointers[2];
+		// Loop through all render items and put them into the instance array
+		for(int i = 0; i < renderList.size(); i++){
+			instances[i].position = renderList[i]->transform.position;
+		}
 
-	strides[0] = Vertex::VertexSize(registeredGOs[0]->mesh->VertexType());
-	strides[1] = sizeof(InstanceType);
+		// Set up the description of the instance buffer.
+		instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+		instanceBufferDesc.ByteWidth = sizeof(InstanceType) * renderList.size();
+		instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		instanceBufferDesc.CPUAccessFlags = 0;
+		instanceBufferDesc.MiscFlags = 0;
+		instanceBufferDesc.StructureByteStride = 0;
 
-	offsets[0] = 0;
-	offsets[1] = 0;
+		// Give the subresource structure a pointer to the instance data.
+		instanceData.pSysMem = instances;
+		instanceData.SysMemPitch = 0;
+		instanceData.SysMemSlicePitch = 0;
 
-	bufferPointers[0] = registeredGOs[0]->mesh->VertexBuffer();	
-	bufferPointers[1] = instanceBuffer;
+		// Create an instance buffer for the instance data
+		HR(device->CreateBuffer(&instanceBufferDesc, &instanceData, &instanceBuffer));
 
-	// Set the current vertex buffer
-	deviceContext->IASetVertexBuffers(0, 2, bufferPointers, strides, offsets);
-	// Set the current index buffer
-	deviceContext->IASetIndexBuffer(registeredGOs[0]->mesh->IndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-	// Set the topology
-	deviceContext->IASetPrimitiveTopology(registeredGOs[0]->mesh->Topology());
+		// Set buffers in the input assembler
+		UINT strides[2];
+		UINT offsets[2];
+		ID3D11Buffer* bufferPointers[2];
+
+		strides[0] = Vertex::VertexSize(renderList[0]->mesh->VertexType());
+		strides[1] = sizeof(InstanceType);
+
+		offsets[0] = 0;
+		offsets[1] = 0;
+
+		bufferPointers[0] = renderList[0]->mesh->VertexBuffer();	
+		bufferPointers[1] = instanceBuffer;
+
+		// Set the current vertex buffer
+		deviceContext->IASetVertexBuffers(0, 2, bufferPointers, strides, offsets);
+		// Set the current index buffer
+		deviceContext->IASetIndexBuffer(renderList[0]->mesh->IndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+		// Set the topology
+		deviceContext->IASetPrimitiveTopology(renderList[0]->mesh->Topology());
 	
-	deviceContext->DrawIndexedInstanced(
-		registeredGOs[0]->mesh->IndexCount(),
-		numInstances,
-		0,
-		0,
-		1);
+		deviceContext->DrawIndexedInstanced(
+			renderList[0]->mesh->IndexCount(),
+			renderList.size(),
+			0,
+			0,
+			1);
 
-	ReleaseMacro(instanceBuffer);
-	delete[] instances;
-	instances = nullptr;
+		ReleaseMacro(instanceBuffer);
+		delete[] instances;
+		instances = nullptr;
+		renderList.clear();
+	}
 };
 
 void Renderer::RegisterGameObject(GameObject* go){
