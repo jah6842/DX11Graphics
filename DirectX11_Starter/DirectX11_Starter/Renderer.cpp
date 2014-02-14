@@ -40,7 +40,7 @@ void Renderer::Draw(){
 		i++;
 	}
 
-	registeredGOs[0]->material->SetBufferData(
+	registeredGOs[0]->material->SetConstantBufferData(
 			//registeredGOs[0]->transform.ModelMatrix(),
 			Transform::Identity().ModelMatrix(),
 			Camera::MainCamera.GetViewMatrix(),

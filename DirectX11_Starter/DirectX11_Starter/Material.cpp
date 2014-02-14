@@ -48,14 +48,14 @@ void Material::Cleanup(){
 Material::Material(){
 	LoadVertexShader(L"../Resources/Shaders/ColoredVertex.cso");
 	LoadPixelShader(L"../Resources/Shaders/ColoredPixel.cso");
-	LoadConstantBuffer();
+	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);
 };
 
 // Assumes vertex and pixel shaders have the same prefix
 Material::Material(std::wstring shaderPrefix, UINT numTextures, std::wstring textureName){
 	LoadVertexShader(L"../Resources/Shaders/" + shaderPrefix + L"Vertex.cso");
 	LoadPixelShader(L"../Resources/Shaders/" + shaderPrefix + L"Pixel.cso");
-	LoadConstantBuffer();
+	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);
 	if(numTextures > 0)
 		LoadTexture(L"../Resources/Textures/" + textureName);
 };
@@ -63,26 +63,22 @@ Material::Material(std::wstring shaderPrefix, UINT numTextures, std::wstring tex
 Material::Material(std::wstring vShaderName, std::wstring pShaderName, UINT numTextures, std::wstring textureName){
 	LoadVertexShader(vShaderName);
 	LoadPixelShader(pShaderName);
-	LoadConstantBuffer();
+	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);
 	if(numTextures > 0)
 		LoadTexture(L"../Resources/Textures/" + textureName);
 };
 
 Material::~Material(){
-	//ReleaseMacro(vertexShader);
-	//ReleaseMacro(pixelShader);
+	// Most releases are handled by the Material Cleanup() function called when the application exits.
 	ReleaseMacro(vsConstantBuffer);
-	//ReleaseMacro(inputLayout);
-	//ReleaseMacro(texture);
-	//ReleaseMacro(textureSamplerState);
 };
 
-void Material::SetBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p){
+void Material::SetConstantBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p){
 	// Get the current device context
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
 	// Update local constant buffer data
-	VertexShaderConstantBuffer vsConstantBufferData;
+	VS_CONSTANT_BUFFER_WVP vsConstantBufferData;
 	vsConstantBufferData.world = w;
 	vsConstantBufferData.view = v;
 	vsConstantBufferData.projection = p;
@@ -101,20 +97,15 @@ void Material::SetInputAssemblerOptions(){
 	// Get the current device context
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
-	// Set the current vertex and pixel shaders, as well the constant buffer for the vert shader
+	// Check if we need to change state, if not use the current state.
 	if(vertexShader != currentVertexShader){
 		currentVertexShader = vertexShader;
 		deviceContext->VSSetShader(vertexShader, NULL, 0);
 	}
-
 	if(vsConstantBuffer != currentConstantBuffer){
-		deviceContext->VSSetConstantBuffers(
-			0,	// Corresponds to the constant buffer's register in the vertex shader
-			1, 
-			&vsConstantBuffer);
+		deviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffer);
 		currentConstantBuffer = vsConstantBuffer;
 	}
-
 	if(pixelShader != currentPixelShader){
 		currentPixelShader = pixelShader;
 		deviceContext->PSSetShader(pixelShader, NULL, 0);
@@ -133,13 +124,20 @@ void Material::SetInputAssemblerOptions(){
 	}
 };
 
-void Material::LoadConstantBuffer(){
+void Material::LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout){
 	// Get the current device
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
 
-	// Constant buffers ----------------------------------------
+	// Create a constant buffer
 	D3D11_BUFFER_DESC cBufferDesc;
-	cBufferDesc.ByteWidth			= sizeof(VertexShaderConstantBuffer);
+
+	switch(layout){
+	case CONSTANT_BUFFER_LAYOUT_VS_WVP:
+		cBufferDesc.ByteWidth			= sizeof(VS_CONSTANT_BUFFER_WVP); break;
+	default:
+		std::wcout << "INVALID CONSTANT BUFFER TYPE" << std::endl;
+	}
+
 	cBufferDesc.Usage				= D3D11_USAGE_DEFAULT;
 	cBufferDesc.BindFlags			= D3D11_BIND_CONSTANT_BUFFER;
 	cBufferDesc.CPUAccessFlags		= 0;

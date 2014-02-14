@@ -8,17 +8,11 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include "DXUtilities.h"
+#include "ConstantBuffer.h"
 #include "Vertex.h"
 #include <iostream>
 
 using namespace DirectX;
-
-struct VertexShaderConstantBuffer
-{
-	XMFLOAT4X4 world;
-	XMFLOAT4X4 view;
-	XMFLOAT4X4 projection;
-};
 
 class Material {
 
@@ -31,7 +25,7 @@ public:
 	Material(std::wstring vShaderName, std::wstring pShaderName, UINT numTextures = 0, std::wstring textureName = L"");
 	~Material();
 
-	void SetBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p);
+	void SetConstantBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p);
 	void SetInputAssemblerOptions();
 
 	// Cleanup all of our static objects
@@ -58,7 +52,7 @@ private:
 
 	void LoadVertexShader(std::wstring vShaderName);
 	void LoadPixelShader(std::wstring pShaderName);
-	void LoadConstantBuffer();
+	void LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout);
 	void LoadTexture(std::wstring texName);
 
 	ID3D11PixelShader* pixelShader;
