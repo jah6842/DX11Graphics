@@ -16,7 +16,7 @@ InstanceType* instances;
 D3D11_BUFFER_DESC instanceBufferDesc;
 D3D11_SUBRESOURCE_DATA instanceData;
 
-UINT numInstances = 2*2*2;
+UINT numInstances = 15*15*15;
 
 void Renderer::Draw(){
 
@@ -41,8 +41,8 @@ void Renderer::Draw(){
 	}
 
 	registeredGOs[0]->material->SetBufferData(
-			registeredGOs[0]->transform.ModelMatrix(),
-			//registeredGOs[0]->transform.Identity().ModelMatrix(),
+			//registeredGOs[0]->transform.ModelMatrix(),
+			Transform::Identity().ModelMatrix(),
 			Camera::MainCamera.GetViewMatrix(),
 			Camera::MainCamera.GetProjectionMatrix());
 	registeredGOs[0]->material->SetInputAssemblerOptions();

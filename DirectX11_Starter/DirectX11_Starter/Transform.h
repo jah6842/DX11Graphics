@@ -21,6 +21,9 @@ public:
 	// Returns an identity transform
 	// Position/rotation 0,0,0, Scale 1,1,1
 	static Transform Identity();
+
+	// Returns a model matrix of the pos, rot, and scale
+	static XMFLOAT4X4 ModelMatrix(Transform t);
 };
 
 #endif // _TRANSFORM_H
