@@ -113,4 +113,17 @@ static UINT StandardCubeIndices[] = {
 	20, 22, 23
 };
 
+XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+XMFLOAT4 green	= XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+XMFLOAT4 blue	= XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+
+Vertex_POS_COLOR StandardQuadVertices[4] = 
+{
+	Vertex_POS_COLOR( XMFLOAT3(-1.0f, +1.0f, +0.0f), red),
+	Vertex_POS_COLOR( XMFLOAT3(+1.0f, -1.0f, +0.0f), red),
+	Vertex_POS_COLOR( XMFLOAT3(-1.0f, -1.0f, +0.0f), blue),
+	Vertex_POS_COLOR( XMFLOAT3(+1.0f, +1.0f, +0.0f), blue)
+};
+UINT StandardQuadIndices[6] = { 0, 1, 2, 1, 0, 3 };
+
 #endif // _MESH_H

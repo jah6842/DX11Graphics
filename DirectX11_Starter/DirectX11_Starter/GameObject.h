@@ -16,20 +16,10 @@ public:
 	Material* material;
 
 	GameObject();
-	//GameObject(std::wstring meshName);
+	GameObject(std::wstring meshName);
 	~GameObject();
 
 	void Update(float dt);
-
-	// Get and Set
-	//void Mesh(std::wstring meshName);
-	//void Material(std::wstring matName);
-	//std::wstring Mesh();
-	//std::wstring Material();
-
-private:
-	//std::wstring mesh;
-	//std::wstring material;
 };
 
 #endif // _GAME_OBJECT_H
