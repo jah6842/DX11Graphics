@@ -3,6 +3,9 @@
 
 #include "dxerr.h"
 #include <d3d11.h>
+#include <string>
+#include <iostream>
+//#include <vld.h>
 
 // Convenience macro for releasing a COM object
 #define ReleaseMacro(x) { if(x){ x->Release(); x = 0; } }

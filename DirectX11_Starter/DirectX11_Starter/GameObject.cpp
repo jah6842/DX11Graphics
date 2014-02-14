@@ -9,7 +9,8 @@ GameObject::GameObject(){
 
 	material = new Material(L"TexturedInstanced", 1, L"texture.png");
 
-	mesh = new Mesh(L"StandardCube");
+	//mesh = new Mesh(L"StandardCube");
+	mesh = Mesh::GetMesh(L"StandardCube");
 
 	// Set up the vertices
 	XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -50,8 +51,8 @@ GameObject::GameObject(std::wstring meshName){
 */
 
 GameObject::~GameObject(){
-	if(mesh != nullptr)
-		delete mesh;
+	//if(mesh != nullptr)
+	//	delete mesh;
 	if(material != nullptr)
 		delete material;
 

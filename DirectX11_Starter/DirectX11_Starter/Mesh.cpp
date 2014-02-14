@@ -2,9 +2,28 @@
 
 std::map<std::wstring, Mesh*> Mesh::meshes;
 
+void Mesh::Cleanup(){
+	typedef std::map<std::wstring, Mesh*>::iterator meshItr;
+	for(meshItr iterator = meshes.begin(); iterator != meshes.end(); iterator++) {
+		//iterator->second->~Mesh();
+		delete iterator->second;
+		iterator->second = nullptr;
+		std::wcout << L"Released: " << iterator->first.c_str() << std::endl;
+	}
+
+};
+
 // Construct a mesh without vertices
 Mesh::Mesh(){
 	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+};
+
+Mesh* Mesh::GetMesh(std::wstring meshName){
+	if(meshes.count(meshName)){
+		return meshes[meshName];
+	}
+
+	return new Mesh(meshName);
 };
 
 // Construct a mesh by name
@@ -18,7 +37,9 @@ Mesh::Mesh(std::wstring meshName){
 		_indexBuffer = meshes[meshName]->IndexBuffer();
 		_numIndices = meshes[meshName]->IndexCount();
 		topology = meshes[meshName]->Topology();
+		return;
 	}
+	std::wcout << "Continued" << std::endl;
 	
 	if(meshName == L"StandardCube")
 	{
@@ -116,6 +137,7 @@ D3D_PRIMITIVE_TOPOLOGY Mesh::Topology(){
 };
 
 Mesh::~Mesh(){
+	std::wcout << "Mesh destroyed" << std::endl;
 	ReleaseMacro(_vertexBuffer);
 	ReleaseMacro(_indexBuffer);
 };

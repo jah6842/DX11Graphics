@@ -42,7 +42,7 @@ void Material::Cleanup(){
 		std::wcout << L"Released: " << iterator->first.c_str() << std::endl;
 	}
 
-	ReleaseMacro(currentConstantBuffer);
+	//ReleaseMacro(currentConstantBuffer);
 };
 
 Material::Material(){
@@ -71,7 +71,7 @@ Material::Material(std::wstring vShaderName, std::wstring pShaderName, UINT numT
 Material::~Material(){
 	//ReleaseMacro(vertexShader);
 	//ReleaseMacro(pixelShader);
-	//ReleaseMacro(vsConstantBuffer);
+	ReleaseMacro(vsConstantBuffer);
 	//ReleaseMacro(inputLayout);
 	//ReleaseMacro(texture);
 	//ReleaseMacro(textureSamplerState);

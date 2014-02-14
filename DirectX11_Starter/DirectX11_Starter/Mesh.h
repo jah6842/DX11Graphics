@@ -14,11 +14,16 @@ class Mesh {
 public:
 	static std::map<std::wstring, Mesh*> meshes;
 
+	static Mesh* GetMesh(std::wstring meshName);
+
+	static void Cleanup();
+
 	// Construct a mesh without vertices
 	Mesh();
 
 	// Construct a mesh by name
 	Mesh(std::wstring meshName);
+
 	
 	// Construct a mesh with vertices, assume clockwise indices
 	void ConstructMesh(std::wstring meshName, void* vertices, UINT numVertices, VERTEX_TYPE vertexType);
