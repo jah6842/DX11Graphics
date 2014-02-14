@@ -34,7 +34,6 @@ void Renderer::Draw(){
 
 	std::vector<GameObject*> openList = std::vector<GameObject*>(registeredGOs.size());
 	std::vector<GameObject*> renderList = std::vector<GameObject*>();
-	std::vector<Material*> seenMaterials = std::vector<Material*>();
 
 	// Add all gameobjects to the open list
 	for(int i = 0; i < registeredGOs.size(); i++){
@@ -46,8 +45,7 @@ void Renderer::Draw(){
 	while(openList.size() > 0){
 
 		// Get the first material from the render list
-		currentRenderMaterial = openList[0]->material;
-		seenMaterials.push_back(currentRenderMaterial);
+		currentRenderMaterial = openList[1]->material;
 
 		// Set the proper input options for this material
 		openList[0]->material->SetConstantBufferData(
@@ -57,18 +55,23 @@ void Renderer::Draw(){
 				Camera::MainCamera.GetProjectionMatrix());
 		openList[0]->material->SetInputAssemblerOptions();
 
+		std::wcout << L"Open list size: " << openList.size() << std::endl;
+
 		// Loop through the open list and get all of the objects with the 
 		// same material that we should add to the render list.
 		for(int i = 0; i < openList.size(); i++){
-			if(openList[i]->material == currentRenderMaterial){
-				renderList[i] = openList[i];
-				openList.erase(openList.begin() + i);
-				i--;
-			}
+			//if(openList[i]->material == currentRenderMaterial){
+				renderList.push_back(openList[i]);
+				//std::wcout << L"Added item to list." << std::endl;
+				//openList.erase(openList.begin() + i);
+				//i--;
+			//}
 		}
+		openList.clear();
 
 		// Allocate memory for all of the instance data
 		instances = new InstanceType[renderList.size()];
+		std::wcout << L"Render list size: " << renderList.size() << std::endl;
 
 		// Loop through all render items and put them into the instance array
 		for(int i = 0; i < renderList.size(); i++){
@@ -122,6 +125,7 @@ void Renderer::Draw(){
 		ReleaseMacro(instanceBuffer);
 		delete[] instances;
 		instances = nullptr;
+		currentRenderMaterial = nullptr;
 		renderList.clear();
 	}
 };
