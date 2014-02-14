@@ -56,7 +56,6 @@ private:
 
 	static ID3D11Buffer* currentConstantBuffer;
 
-
 	void LoadVertexShader(std::wstring vShaderName);
 	void LoadPixelShader(std::wstring pShaderName);
 	void LoadConstantBuffer();

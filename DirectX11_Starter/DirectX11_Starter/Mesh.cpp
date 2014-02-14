@@ -15,57 +15,48 @@ void Mesh::Cleanup(){
 
 // Construct a mesh without vertices
 Mesh::Mesh(){
-	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	_topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 };
 
 Mesh* Mesh::GetMesh(std::wstring meshName){
+	// Check if the mesh has already been created
 	if(meshes.count(meshName)){
 		return meshes[meshName];
 	}
 
+	// If not, create a new mesh.
 	return new Mesh(meshName);
 };
 
 // Construct a mesh by name
 Mesh::Mesh(std::wstring meshName){
-	// Check if the mesh already exists
-	
-	if(meshes.count(meshName)){
-		_vertexBuffer = meshes[meshName]->_vertexBuffer;
-		_numVertices = meshes[meshName]->VertexCount();
-		_vertexType = meshes[meshName]->VertexType();
-		_indexBuffer = meshes[meshName]->IndexBuffer();
-		_numIndices = meshes[meshName]->IndexCount();
-		topology = meshes[meshName]->Topology();
-		return;
-	}
-	std::wcout << "Continued" << std::endl;
-	
 	if(meshName == L"StandardCube")
 	{
 		ConstructMesh(L"StandardCube", StandardCubeVertices, 24, VERTEX_TYPE_POS_UV, StandardCubeIndices, 36);
 		meshes[L"StandardCube"] = this;
+		return;
 	}
-
+	if(meshName == L"StandardQuad")
+	{
+		ConstructMesh(L"StandardQuad", StandardQuadVertices, 4, VERTEX_TYPE_POS_COLOR, StandardQuadIndices, 6);
+		meshes[L"StandardQuad"] = this;
+		return;
+	}
 };
 
-// Construct a mesh with vertices, assume clockwise indices
+// Construct a mesh with vertices, no index buffer
 void Mesh::ConstructMesh(std::wstring meshName, void* vertices, UINT numVertices, VERTEX_TYPE vertexType){
 	_vertexType = vertexType;
-	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	_topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	SetVertexBuffer(vertices, numVertices, vertexType);
 };
 
 // Construct a mesh with vertices, custom indices
 void Mesh::ConstructMesh(std::wstring meshName, void* vertices, UINT numVertices, VERTEX_TYPE vertexType, UINT* indices, UINT numIndices){
 	_vertexType = vertexType;
-	topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	_topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	SetVertexBuffer(vertices, numVertices, _vertexType);
 	SetIndexBuffer(indices, numIndices);
-};
-
-void Mesh::CreateMeshFromModel(std::wstring modelName){
-
 };
 
 void Mesh::SetVertexBuffer(void* vertices, UINT numVertices, VERTEX_TYPE vertexType){
@@ -109,7 +100,7 @@ void Mesh::SetIndexBuffer(UINT* indices, UINT numIndices){
 };
 
 void Mesh::SetTopology(D3D11_PRIMITIVE_TOPOLOGY topo){
-	topology = topo;
+	_topology = topo;
 };
 
 UINT Mesh::IndexCount(){
@@ -133,11 +124,10 @@ ID3D11Buffer* Mesh::IndexBuffer(){
 };
 
 D3D_PRIMITIVE_TOPOLOGY Mesh::Topology(){
-	return topology;
+	return _topology;
 };
 
 Mesh::~Mesh(){
-	std::wcout << "Mesh destroyed" << std::endl;
 	ReleaseMacro(_vertexBuffer);
 	ReleaseMacro(_indexBuffer);
 };

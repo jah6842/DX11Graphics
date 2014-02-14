@@ -23,7 +23,6 @@ public:
 
 	// Construct a mesh by name
 	Mesh(std::wstring meshName);
-
 	
 	// Construct a mesh with vertices, assume clockwise indices
 	void ConstructMesh(std::wstring meshName, void* vertices, UINT numVertices, VERTEX_TYPE vertexType);
@@ -54,9 +53,7 @@ private:
 	UINT _numIndices;
 
 	// How is the data laid out? 
-	D3D_PRIMITIVE_TOPOLOGY topology; // default is D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST 
-
-
+	D3D_PRIMITIVE_TOPOLOGY _topology; // default is D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST 
 };
 
 static Vertex_POS_UV StandardCubeVertices[24] =
@@ -113,17 +110,17 @@ static UINT StandardCubeIndices[] = {
 	20, 22, 23
 };
 
-XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-XMFLOAT4 green	= XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-XMFLOAT4 blue	= XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+static XMFLOAT4 red	= XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+static XMFLOAT4 green	= XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+static XMFLOAT4 blue	= XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-Vertex_POS_COLOR StandardQuadVertices[4] = 
+static Vertex_POS_COLOR StandardQuadVertices[4] = 
 {
 	Vertex_POS_COLOR( XMFLOAT3(-1.0f, +1.0f, +0.0f), red),
 	Vertex_POS_COLOR( XMFLOAT3(+1.0f, -1.0f, +0.0f), red),
 	Vertex_POS_COLOR( XMFLOAT3(-1.0f, -1.0f, +0.0f), blue),
 	Vertex_POS_COLOR( XMFLOAT3(+1.0f, +1.0f, +0.0f), blue)
 };
-UINT StandardQuadIndices[6] = { 0, 1, 2, 1, 0, 3 };
+static UINT StandardQuadIndices[6] = { 0, 1, 2, 1, 0, 3 };
 
 #endif // _MESH_H
