@@ -1,6 +1,7 @@
 #ifndef _DXUTILITIES_H
 #define _DXUTILITIES_H
 
+#include <Windows.h>
 #include "dxerr.h"
 #include <d3d11.h>
 #include <string>
@@ -48,6 +49,15 @@ public:
 	static void SetCurrentDeviceContext(ID3D11DeviceContext* deviceContext){
 		_currentDeviceContext = deviceContext;
 	};
+};
+
+class DebugTimer {
+	static __int64 frequency;
+	static __int64 start;
+	static __int64 stop;
+public:
+	static void Start();
+	static void Stop();
 };
 
 #endif // _DXUTILITIES_H

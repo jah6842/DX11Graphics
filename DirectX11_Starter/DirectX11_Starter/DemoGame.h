@@ -39,7 +39,7 @@ public:
 
 private:
 	//GameObject* gameGO;
-	static const int NUM_GO = 50;
+	static const int NUM_GO = 15;
 	std::vector<GameObject*> gameobjects;
 
 	// Keeps track of the old mouse position.  Useful for 
