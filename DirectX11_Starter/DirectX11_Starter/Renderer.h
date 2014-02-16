@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include <map>
 #include <vector>
+#include <list>
 #include <algorithm>
 
 #include "GameObject.h"
@@ -20,8 +21,6 @@ public:
 	static void Draw();
 	static void RegisterGameObject(GameObject* go);
 	static void UnRegisterGameObject(GameObject* go);
-
-	//void DrawBatched(GameObject* gos);
 };
 
 #endif // _RENDERER_H

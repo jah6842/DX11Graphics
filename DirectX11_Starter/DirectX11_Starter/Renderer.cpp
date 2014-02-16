@@ -11,76 +11,55 @@ Renderer::~Renderer(){
 };
 
 ID3D11Buffer* instanceBuffer = nullptr;
-
 InstanceType* instances;
 D3D11_BUFFER_DESC instanceBufferDesc;
 D3D11_SUBRESOURCE_DATA instanceData;
 
-//UINT numInstances = 15*15*15;
-
 void Renderer::Draw(){
-
-	// Finally do the actual drawing
-	/*
-	deviceContext->DrawIndexed(
-		go->mesh->IndexCount(),	// The number of indices we're using in this draw
-		0,
-		0);
-	*/
-
 	// Get the current device context
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
 
-	std::vector<GameObject*> openList = std::vector<GameObject*>(registeredGOs.size());
-	std::vector<GameObject*> renderList = std::vector<GameObject*>();
-
-	// Add all gameobjects to the open list
-	for(int i = 0; i < registeredGOs.size(); i++){
-		openList[i] = registeredGOs[i];
-	}
+	GameObject** renderList = new GameObject*[registeredGOs.size()];
+	UINT renderCount = 0;
 
 	Material* currentRenderMaterial = nullptr;
 	// Get all gameobjects with a certain material and draw them
-	while(openList.size() > 0){
+	for(std::list<Material*>::iterator itr = Material::_materials.begin();
+			itr != Material::_materials.end(); itr++){
 
 		// Get the first material from the render list
-		currentRenderMaterial = openList[1]->material;
+		currentRenderMaterial = *itr;
 
 		// Set the proper input options for this material
-		openList[0]->material->SetConstantBufferData(
-				openList[0]->transform.ModelMatrix(), // Model matrix of the first object
-				//Transform::Identity().ModelMatrix(), // Model matrix of an identity matrix
+		(*itr)->SetConstantBufferData(
+				Transform::Identity().ModelMatrix(), // Model matrix of an identity transform
 				Camera::MainCamera.GetViewMatrix(),
 				Camera::MainCamera.GetProjectionMatrix());
-		openList[0]->material->SetInputAssemblerOptions();
-
-		std::wcout << L"Open list size: " << openList.size() << std::endl;
+		(*itr)->SetInputAssemblerOptions();
 
 		// Loop through the open list and get all of the objects with the 
 		// same material that we should add to the render list.
-		for(int i = 0; i < openList.size(); i++){
-			//if(openList[i]->material == currentRenderMaterial){
-				renderList.push_back(openList[i]);
-				//std::wcout << L"Added item to list." << std::endl;
-				//openList.erase(openList.begin() + i);
-				//i--;
-			//}
+		for(int i = 0; i < registeredGOs.size(); i++){
+			if(registeredGOs[i]->material == currentRenderMaterial){
+				renderList[renderCount] = registeredGOs[i];
+				renderCount++;
+			}
 		}
-		openList.clear();
+		if(renderCount == 0)
+			continue;
 
 		// Allocate memory for all of the instance data
-		instances = new InstanceType[renderList.size()];
-		std::wcout << L"Render list size: " << renderList.size() << std::endl;
+		instances = new InstanceType[renderCount];
 
 		// Loop through all render items and put them into the instance array
-		for(int i = 0; i < renderList.size(); i++){
+		for (int i = 0; i < renderCount; i++) {
 			instances[i].position = renderList[i]->transform.position;
 		}
 
 		// Set up the description of the instance buffer.
 		instanceBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		instanceBufferDesc.ByteWidth = sizeof(InstanceType) * renderList.size();
+		instanceBufferDesc.ByteWidth = sizeof(InstanceType) * renderCount;
 		instanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		instanceBufferDesc.CPUAccessFlags = 0;
 		instanceBufferDesc.MiscFlags = 0;
@@ -116,18 +95,26 @@ void Renderer::Draw(){
 		deviceContext->IASetPrimitiveTopology(renderList[0]->mesh->Topology());
 	
 		deviceContext->DrawIndexedInstanced(
-			renderList[0]->mesh->IndexCount(),
-			renderList.size(),
+			renderList[0]->mesh->IndexCount(),	// Index count per instance
+			renderCount,						// # instances to render
+			0,									// Start index location
+			0,									// Start vertex location
+			0);									// When to start using instances
+
+		/* Draw individual model
+		deviceContext->DrawIndexed(
+			go->mesh->IndexCount(),	// The number of indices we're using in this draw
 			0,
-			0,
-			1);
+			0); */
 
 		ReleaseMacro(instanceBuffer);
 		delete[] instances;
 		instances = nullptr;
 		currentRenderMaterial = nullptr;
-		renderList.clear();
+		renderCount = 0;
 	}
+
+	delete[] renderList;
 };
 
 void Renderer::RegisterGameObject(GameObject* go){

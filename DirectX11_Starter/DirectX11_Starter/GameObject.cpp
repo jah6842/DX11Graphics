@@ -5,7 +5,7 @@ GameObject::GameObject(std::wstring meshName){
 	Renderer::RegisterGameObject(this);
 
 	// Set the material
-	material = new Material(L"TexturedInstanced", 1, L"texture.png");
+	material = Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
 
 	// Set the mesh
 	mesh = Mesh::GetMesh(meshName);
@@ -16,8 +16,16 @@ GameObject::GameObject(){
 	Renderer::RegisterGameObject(this);
 
 	// Set the material
-	material = new Material(L"TexturedInstanced", 1, L"texture.png");
-
+	static UINT flip = 1;
+	if(flip % 3 == 0)
+		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
+	else if(flip % 2 == 0)
+		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture2.png");
+	else
+		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"desert-texture.jpg");
+	
+	flip++;
+	
 	// Set the mesh
 	mesh = Mesh::GetMesh(L"StandardCube");
 };
@@ -28,9 +36,6 @@ void GameObject::Update(float dt){
 };
 
 GameObject::~GameObject(){
-	if(material != nullptr)
-		delete material;
-
 	// Unregister this GameObject from the renderer
 	Renderer::UnRegisterGameObject(this);
 };

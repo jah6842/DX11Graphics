@@ -11,12 +11,16 @@
 #include "ConstantBuffer.h"
 #include "Vertex.h"
 #include <iostream>
+#include <list>
 
 using namespace DirectX;
 
 class Material {
 
 public:
+	static Material* GetMaterial(std::wstring shaderPrefix, UINT numTextures = 0, std::wstring textureName = L"");
+	bool Compare(std::wstring shaderPrefix, UINT numTextures = 0, std::wstring textureName = L"");
+
 	// Load the default shaders
 	Material();
 	// Assumes vertex and pixel shaders have the same prefix, optional texture
@@ -31,7 +35,10 @@ public:
 	// Cleanup all of our static objects
 	static void Cleanup();
 
+	static std::list<Material*> _materials;
+
 private:
+
 	// Static containers so we don't end up with duplicates
 	static std::map<std::wstring, ID3D11PixelShader*> _pixelShaders;
 	static ID3D11PixelShader* currentPixelShader;
@@ -55,9 +62,11 @@ private:
 	void LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout);
 	void LoadTexture(std::wstring texName);
 
+	std::wstring _materialName;
 	ID3D11PixelShader* pixelShader;
 	ID3D11VertexShader* vertexShader;
 
+	std::wstring textureName;
 	ID3D11ShaderResourceView* texture;
 	ID3D11SamplerState* textureSamplerState;
 

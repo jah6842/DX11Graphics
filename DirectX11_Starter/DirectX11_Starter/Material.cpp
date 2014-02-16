@@ -1,6 +1,7 @@
 #include "Material.h"
 
 // Static variables
+std::list<Material*> Material::_materials;
 std::map<std::wstring, ID3D11PixelShader*> Material::_pixelShaders;
 std::map<std::wstring, ID3D11VertexShader*> Material::_vertexShaders;
 std::map<std::wstring, ID3D11InputLayout*> Material::_inputLayouts;
@@ -16,51 +17,84 @@ ID3D11Buffer* Material::currentConstantBuffer = nullptr;
 
 // Static class to cleanup all necessary items
 void Material::Cleanup(){
+	typedef std::list<Material*>::iterator matItr;
+	for(matItr iterator = _materials.begin(); iterator != _materials.end(); iterator++) {
+		std::wcout << L"Deleting material: " << (*iterator)->_materialName << std::endl;
+		delete *iterator;
+	}
 	typedef std::map<std::wstring, ID3D11PixelShader*>::iterator pixelItr;
 	for(pixelItr iterator = _pixelShaders.begin(); iterator != _pixelShaders.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"Released Pixel Shader: " << iterator->first.c_str() << std::endl;
+		std::wcout << L"  Released Pixel Shader: " << iterator->first.c_str() << std::endl;
 	}
 	typedef std::map<std::wstring, ID3D11VertexShader*>::iterator vertexItr;
 	for(vertexItr iterator = _vertexShaders.begin(); iterator != _vertexShaders.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"Released Vertex Shader: " << iterator->first.c_str() << std::endl;
+		std::wcout << L"  Released Vertex Shader: " << iterator->first.c_str() << std::endl;
 	}
 	typedef std::map<std::wstring, ID3D11InputLayout*>::iterator inputItr;
 	for(inputItr iterator = _inputLayouts.begin(); iterator != _inputLayouts.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"Released Input Layout: " << iterator->first.c_str() << std::endl;
+		std::wcout << L"  Released Input Layout: " << iterator->first.c_str() << std::endl;
 	}
 	typedef std::map<std::wstring, ID3D11ShaderResourceView*>::iterator texItr;
 	for(texItr iterator = _textures.begin(); iterator != _textures.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"Released Shader Resource View: " << iterator->first.c_str() << std::endl;
+		std::wcout << L"  Released Shader Resource View: " << iterator->first.c_str() << std::endl;
 	}
 	typedef std::map<std::wstring, ID3D11SamplerState*>::iterator texSampItr;
 	for(texSampItr iterator = _textureSamplers.begin(); iterator != _textureSamplers.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"Released Sampler State: " << iterator->first.c_str() << std::endl;
+		std::wcout << L"  Released Sampler State: " << iterator->first.c_str() << std::endl;
 	}
 
 	//ReleaseMacro(currentConstantBuffer);
 };
 
+Material* Material::GetMaterial(std::wstring shaderPrefix, UINT numTextures, std::wstring textureName){
+	// Check if the material already exists
+	for(std::list<Material*>::iterator itr = _materials.begin(); itr != _materials.end(); itr++){
+		if((*itr)->Compare(shaderPrefix, numTextures, textureName)){
+			return *itr;
+		}
+	}
+
+	//std::wcout << L"New material created: " << shaderPrefix << std::endl;
+	return new Material(shaderPrefix, numTextures, textureName);
+};
+
+bool Material::Compare(std::wstring shaderPrefix, UINT numTextures, std::wstring texName){
+	//std::wcout << _materialName 
+
+	if(_materialName == shaderPrefix && textureName == texName){
+		return true;
+	}
+
+	return false;
+};
+
 Material::Material(){
+	textureName = L"";
 	LoadVertexShader(L"../Resources/Shaders/ColoredVertex.cso");
 	LoadPixelShader(L"../Resources/Shaders/ColoredPixel.cso");
 	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);
 };
 
 // Assumes vertex and pixel shaders have the same prefix
-Material::Material(std::wstring shaderPrefix, UINT numTextures, std::wstring textureName){
+Material::Material(std::wstring shaderPrefix, UINT numTextures, std::wstring texName){
+	_materialName = shaderPrefix;
+	textureName = texName;
 	LoadVertexShader(L"../Resources/Shaders/" + shaderPrefix + L"Vertex.cso");
 	LoadPixelShader(L"../Resources/Shaders/" + shaderPrefix + L"Pixel.cso");
 	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);
 	if(numTextures > 0)
 		LoadTexture(L"../Resources/Textures/" + textureName);
+
+	_materials.push_back(this);
 };
 
-Material::Material(std::wstring vShaderName, std::wstring pShaderName, UINT numTextures, std::wstring textureName){
+Material::Material(std::wstring vShaderName, std::wstring pShaderName, UINT numTextures, std::wstring texName){
+	textureName = texName;
 	LoadVertexShader(vShaderName);
 	LoadPixelShader(pShaderName);
 	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);

@@ -7,7 +7,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "Renderer.h"
-//#include <vld.h>
+#include <vld.h>
 
 // Include run-time memory checking in debug builds
 #if defined(DEBUG) || defined(_DEBUG)
@@ -39,7 +39,7 @@ public:
 
 private:
 	//GameObject* gameGO;
-	static const int NUM_GO = 15;
+	static const int NUM_GO = 50;
 	std::vector<GameObject*> gameobjects;
 
 	// Keeps track of the old mouse position.  Useful for 
