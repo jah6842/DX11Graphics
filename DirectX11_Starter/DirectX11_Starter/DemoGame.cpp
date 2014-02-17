@@ -92,7 +92,7 @@ bool DemoGame::Init()
 		for(int j = 0; j < NUM_GO; j++){
 			for(int k = 0; k < NUM_GO; k++){
 				GameObject* g = new GameObject();
-				g->transform.position = XMFLOAT3(i * 5,j * 5,k * 5);
+				g->transform.position = XMFLOAT3(i * 5.0f,j * 5.0f,k * 5.0f);
 				gameobjects.push_back(g);
 			}
 		}
@@ -149,7 +149,7 @@ void DemoGame::UpdateScene(float dt)
 	Camera::MainCamera.Update(dt);
 
 	//material->SetBufferData(worldMatrix, viewMatrix, projectionMatrix);
-	for(int i = 0; i < gameobjects.size(); i++){
+	for(UINT i = 0; i < gameobjects.size(); i++){
 		gameobjects[i]->Update(dt);
 	}
 
@@ -169,7 +169,7 @@ void DemoGame::DrawScene()
 		1.0f,
 		0);
 
-	for(int i = 0; i < gameobjects.size(); i++){
+	for(UINT i = 0; i < gameobjects.size(); i++){
 		//gameobjects[i]->Render();
 	}
 

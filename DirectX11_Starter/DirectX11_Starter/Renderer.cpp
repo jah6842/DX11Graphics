@@ -16,6 +16,8 @@ D3D11_BUFFER_DESC instanceBufferDesc;
 D3D11_SUBRESOURCE_DATA instanceData;
 
 void Renderer::Draw(){
+	UINT drawnObjects = 0;
+
 	// Get the current device context
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
@@ -33,14 +35,23 @@ void Renderer::Draw(){
 
 		// Set the proper input options for this material
 		(*itr)->SetConstantBufferData(
-				Transform::Identity().ModelMatrix(), // Model matrix of an identity transform
+				Camera::MainCamera._transform.WorldMatrix(),
+				//Transform::Identity().WorldMatrix(), // Model matrix of an identity transform
 				Camera::MainCamera.GetViewMatrix(),
 				Camera::MainCamera.GetProjectionMatrix());
 		(*itr)->SetInputAssemblerOptions();
 
 		// Loop through the open list and get all of the objects with the 
 		// same material that we should add to the render list.
-		for(int i = 0; i < registeredGOs.size(); i++){
+		for(UINT i = 0; i < registeredGOs.size(); i++){
+
+			// Check if the object is in the viewing frustum
+			/* DISABLED FOR NOW, NOT WORKING!
+			if(!Camera::MainCamera.PointInFrustum(registeredGOs[i]->transform.position))
+				continue;
+			*/
+
+			// Check if the object is using the current material
 			if(registeredGOs[i]->material == currentRenderMaterial){
 				renderList[renderCount] = registeredGOs[i];
 				renderCount++;
@@ -53,7 +64,7 @@ void Renderer::Draw(){
 		instances = new InstanceType[renderCount];
 
 		// Loop through all render items and put them into the instance array
-		for (int i = 0; i < renderCount; i++) {
+		for (UINT i = 0; i < renderCount; i++) {
 			instances[i].position = renderList[i]->transform.position;
 		}
 
@@ -111,6 +122,7 @@ void Renderer::Draw(){
 		delete[] instances;
 		instances = nullptr;
 		currentRenderMaterial = nullptr;
+		drawnObjects += renderCount;
 		renderCount = 0;
 	}
 

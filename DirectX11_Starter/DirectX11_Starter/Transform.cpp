@@ -11,7 +11,7 @@ Transform::~Transform(){
 };
 
 // Returns a model matrix of the pos, rot, and scale
-XMFLOAT4X4 Transform::ModelMatrix(){
+XMFLOAT4X4 Transform::WorldMatrix(){
 	XMMATRIX pos = XMMatrixTranslation(position.x, position.y, position.z);
 	XMMATRIX rot = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
 	XMMATRIX sca = XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -24,7 +24,7 @@ XMFLOAT4X4 Transform::ModelMatrix(){
 };
 
 // Returns a model matrix of the pos, rot, and scale
-XMFLOAT4X4 Transform::ModelMatrix(Transform t){
+XMFLOAT4X4 Transform::WorldMatrix(Transform t){
 	XMMATRIX pos = XMMatrixTranslation(t.position.x, t.position.y, t.position.z);
 	XMMATRIX rot = XMMatrixRotationRollPitchYaw(t.rotation.x, t.rotation.y, t.rotation.z);
 	XMMATRIX sca = XMMatrixScaling(t.scale.x, t.scale.y, t.scale.z);

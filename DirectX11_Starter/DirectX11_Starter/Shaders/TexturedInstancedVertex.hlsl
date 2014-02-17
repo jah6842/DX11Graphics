@@ -37,11 +37,11 @@ VS_OUTPUT main( VertexShaderInput input )
 	VS_OUTPUT output;
 
 	// Calculate output position
-	matrix worldViewProj = mul(mul(world, view), projection);
+	matrix viewProj = mul(view, projection);
 	input.position.x += input.instancePosition.x;
 	input.position.y += input.instancePosition.y;
 	input.position.z += input.instancePosition.z;
-	output.Pos = mul(float4(input.position, 1.0f), worldViewProj);
+	output.Pos = mul(float4(input.position, 1.0f), viewProj);
 
 	// Pass the color through - will be interpolated per-pixel by the rasterizer
 	//output.color = input.color;
