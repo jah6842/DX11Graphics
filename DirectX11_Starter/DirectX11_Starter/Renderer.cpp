@@ -46,10 +46,10 @@ void Renderer::Draw(){
 		//for(UINT i = 0; i < registeredGOs.size(); i++){
 		for(std::unordered_set<GameObject*>::iterator itr = registeredGOs.begin(); itr != registeredGOs.end(); ++itr){
 			// Check if the object is in the viewing frustum
-			/* DISABLED FOR NOW, NOT WORKING!
-			if(!Camera::MainCamera.PointInFrustum(registeredGOs[i]->transform.position))
-				continue;
-			*/
+			// DISABLED FOR NOW, NOT WORKING!
+			//if(!Camera::MainCamera.PointInFrustum((*itr)->transform.position))
+			//	continue;
+			
 
 			// Check if the object is using the current material
 			if((*itr)->material == currentRenderMaterial){
@@ -65,7 +65,7 @@ void Renderer::Draw(){
 
 		// Loop through all render items and put them into the instance array
 		for (UINT i = 0; i < renderCount; i++) {
-			instances[i].position = renderList[i]->transform.position;
+			instances[i].modelMatrix = renderList[i]->transform.WorldMatrix();
 		}
 
 		// Set up the description of the instance buffer.

@@ -7,7 +7,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "Renderer.h"
-#include <vld.h>
+//#include <vld.h>
 
 // Include run-time memory checking in debug builds
 #if defined(DEBUG) || defined(_DEBUG)
@@ -38,7 +38,7 @@ public:
 	void OnMouseScroll(WPARAM whlState, int delta);
 
 private:
-	static const int NUM_GO = 40;
+	static const int NUM_GO = 20;
 	std::vector<GameObject*> gameobjects;
 
 	// Keeps track of the old mouse position.  Useful for 
