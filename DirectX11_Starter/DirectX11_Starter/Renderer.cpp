@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-std::vector<GameObject*> Renderer::registeredGOs = std::vector<GameObject*>();
+std::unordered_set<GameObject*> Renderer::registeredGOs = std::unordered_set<GameObject*>();
 
 Renderer::Renderer(){
 
@@ -43,8 +43,8 @@ void Renderer::Draw(){
 
 		// Loop through the open list and get all of the objects with the 
 		// same material that we should add to the render list.
-		for(UINT i = 0; i < registeredGOs.size(); i++){
-
+		//for(UINT i = 0; i < registeredGOs.size(); i++){
+		for(std::unordered_set<GameObject*>::iterator itr = registeredGOs.begin(); itr != registeredGOs.end(); ++itr){
 			// Check if the object is in the viewing frustum
 			/* DISABLED FOR NOW, NOT WORKING!
 			if(!Camera::MainCamera.PointInFrustum(registeredGOs[i]->transform.position))
@@ -52,8 +52,8 @@ void Renderer::Draw(){
 			*/
 
 			// Check if the object is using the current material
-			if(registeredGOs[i]->material == currentRenderMaterial){
-				renderList[renderCount] = registeredGOs[i];
+			if((*itr)->material == currentRenderMaterial){
+				renderList[renderCount] = *itr;
 				renderCount++;
 			}
 		}
@@ -130,9 +130,12 @@ void Renderer::Draw(){
 };
 
 void Renderer::RegisterGameObject(GameObject* go){
-	registeredGOs.push_back(go);
+	//registeredGOs.push_back(go);
+	registeredGOs.insert(go);
 };
 
 void Renderer::UnRegisterGameObject(GameObject* go){
-	registeredGOs.erase(std::remove(registeredGOs.begin(), registeredGOs.end(), go), registeredGOs.end());
+	std::unordered_set<GameObject*>::iterator itr;
+	itr = registeredGOs.find(go);
+	registeredGOs.erase(itr);
 };

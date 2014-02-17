@@ -3,6 +3,7 @@
 
 #include <d3d11.h>
 #include <map>
+#include <unordered_set>
 #include <vector>
 #include <list>
 #include <algorithm>
@@ -13,7 +14,8 @@ class GameObject;
 
 class Renderer {
 private:
-	static std::vector<GameObject*> registeredGOs;
+	//static std::vector<GameObject*> registeredGOs;
+	static std::unordered_set<GameObject*> registeredGOs;
 
 	Renderer();
 	~Renderer();
