@@ -14,7 +14,6 @@ class GameObject;
 
 class Renderer {
 private:
-	//static std::vector<GameObject*> registeredGOs;
 	static std::unordered_set<GameObject*> registeredGOs;
 
 	Renderer();

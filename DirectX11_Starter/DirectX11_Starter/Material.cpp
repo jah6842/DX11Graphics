@@ -251,7 +251,7 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 	}
 	if(vShaderName.find(L"TexturedInstanced") != std::wstring::npos){
 		description = VERTEX_DESCRIPTION_POS_UV_INSTANCED;
-		descriptionSize = 3;
+		descriptionSize = 6;
 	}
 
 	assert(description != nullptr);

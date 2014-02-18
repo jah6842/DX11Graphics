@@ -14,7 +14,6 @@ enum VERTEX_TYPE
 };
 
 struct InstanceType {
-	//XMFLOAT3 position;
 	XMFLOAT4X4 modelMatrix;
 };
 

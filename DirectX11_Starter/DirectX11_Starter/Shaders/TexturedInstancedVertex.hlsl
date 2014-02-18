@@ -38,17 +38,10 @@ VS_OUTPUT main( VertexShaderInput input )
 
 	// Calculate output position
 	matrix viewProj = mul(view, projection);
-	/*
-	input.position.x += input.instancePosition.x;
-	input.position.y += input.instancePosition.y;
-	input.position.z += input.instancePosition.z;
-	output.Pos = mul(float4(input.position, 1.0f), viewProj);
-	*/
-	viewProj = mul(input.instancePosition, viewProj);
-	output.Pos = mul(float4(0,0,0,1), viewProj);
+	matrix final = mul(input.instancePosition, viewProj);
+	output.Pos = mul(float4(input.position, 1.0f), final);
 
-	// Pass the color through - will be interpolated per-pixel by the rasterizer
-	//output.color = input.color;
+	// Texture UVs
 	output.TexCoord = input.TexCoord;
 
 	return output;

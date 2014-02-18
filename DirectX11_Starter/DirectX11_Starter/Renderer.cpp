@@ -65,7 +65,9 @@ void Renderer::Draw(){
 
 		// Loop through all render items and put them into the instance array
 		for (UINT i = 0; i < renderCount; i++) {
-			instances[i].modelMatrix = renderList[i]->transform.WorldMatrix();
+			//XMFLOAT4X4 mmx = 
+			//XMMATRIX mtx = XMLoadFloat4x4(&mmx);
+			instances[i].modelMatrix = renderList[i]->transform.WorldMatrix();;
 		}
 
 		// Set up the description of the instance buffer.
@@ -130,7 +132,6 @@ void Renderer::Draw(){
 };
 
 void Renderer::RegisterGameObject(GameObject* go){
-	//registeredGOs.push_back(go);
 	registeredGOs.insert(go);
 };
 
