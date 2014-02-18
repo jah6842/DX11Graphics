@@ -92,7 +92,7 @@ bool DemoGame::Init()
 		for(int j = 0; j < NUM_GO; j++){
 			for(int k = 0; k < NUM_GO; k++){
 				GameObject* g = new GameObject();
-				g->transform.position = XMFLOAT3(i * 5.0f,j * 5.0f,k * 5.0f);
+				g->transform.SetPosition(i * 5.0f, j * 5.0f, k * 5.0f);
 				gameobjects.push_back(g);
 			}
 		}
@@ -126,7 +126,7 @@ void DemoGame::UpdateScene(float dt)
 		std::default_random_engine rnd(rd());
 		std::uniform_int_distribution<int> uInt(-50, 50);
 		GameObject* go = new GameObject();
-		go->transform.position = XMFLOAT3(uInt(rnd), uInt(rnd), uInt(rnd));
+		go->transform.SetPosition(uInt(rnd), uInt(rnd), uInt(rnd));
 		gameobjects.push_back(go);
 	}
 	if(GetAsyncKeyState(VK_SUBTRACT)){
@@ -138,22 +138,19 @@ void DemoGame::UpdateScene(float dt)
 
 	float speed = 10.0f;
 	if(GetAsyncKeyState('W'))
-		Camera::MainCamera._transform.position.y += (speed * dt);
+		Camera::MainCamera._transform.Move(0, speed * dt, 0);
 	if(GetAsyncKeyState('S'))
-		Camera::MainCamera._transform.position.y -= (speed * dt);
+		Camera::MainCamera._transform.Move(0, -speed * dt, 0);
 	if(GetAsyncKeyState('A'))
-		Camera::MainCamera._transform.position.x -= (speed * dt);
+		Camera::MainCamera._transform.Move(-speed * dt, 0, 0);
 	if(GetAsyncKeyState('D'))
-		Camera::MainCamera._transform.position.x += (speed * dt);
+		Camera::MainCamera._transform.Move(speed * dt, 0, 0);
 
 	Camera::MainCamera.Update(dt);
 
-	//material->SetBufferData(worldMatrix, viewMatrix, projectionMatrix);
 	for(UINT i = 0; i < gameobjects.size(); i++){
 		gameobjects[i]->Update(dt);
 	}
-
-	//Camera::MainCamera._transform.position.x += .0001f;
 }
 
 // Clear the screen, redraw everything, present
@@ -205,6 +202,6 @@ void DemoGame::OnMouseMove(WPARAM btnState, int x, int y)
 }
 
 void DemoGame::OnMouseScroll(WPARAM whlState, int delta){
-	Camera::MainCamera._transform.position.z += delta / 10.0f;
+	Camera::MainCamera._transform.Move(0, 0, delta / 10.0f);
 }
 #pragma endregion

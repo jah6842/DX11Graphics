@@ -10,6 +10,69 @@ Transform::~Transform(){
 
 };
 
+// Getters
+XMFLOAT3 Transform::Pos(){
+	return position;
+};
+float Transform::PosX(){
+	return position.x;
+};
+float Transform::PosY(){
+	return position.y;
+};
+float Transform::PosZ(){
+	return position.z;
+};
+
+// Setters
+void Transform::SetPosition(float x, float y, float z){
+	position = XMFLOAT3(x,y,z);
+};
+void Transform::SetPosition(XMFLOAT3 pos){
+	position = pos;
+};
+void Transform::SetRotation(float xRad, float yRad, float zRad){
+	rotation = XMFLOAT3(xRad, yRad, zRad);
+};
+void Transform::SetRotation(XMFLOAT3 rotRad){
+	rotation = rotRad;
+};
+void Transform::SetScale(float x, float y, float z){
+	scale = XMFLOAT3(x,y,z);
+};
+void Transform::SetScale(XMFLOAT3 sca){
+	scale = sca;
+};
+
+// Movement functions
+void Transform::Move(float x, float y, float z){
+	position.x += x;
+	position.y += y;
+	position.z += z;
+};
+void Transform::Move(XMFLOAT3 pos){
+	Move(pos.x, pos.y, pos.z);
+};
+
+// Rotation functions
+void Transform::Rotate(float xRad, float yRad, float zRad){
+	RotateX(xRad);
+	RotateY(yRad);
+	RotateZ(zRad);
+};
+void Transform::Rotate(XMFLOAT3 rotRad){
+	Rotate(rotRad.x, rotRad.y, rotRad.z);
+};
+void Transform::RotateX(float xRad){
+	rotation.x += xRad;
+};
+void Transform::RotateY(float yRad){
+	rotation.y += yRad;
+};
+void Transform::RotateZ(float zRad){
+	rotation.z += zRad;
+};
+
 // Returns a model matrix of the pos, rot, and scale
 XMFLOAT4X4 Transform::WorldMatrix(){
 	XMMATRIX pos = XMMatrixTranslation(position.x, position.y, position.z);
@@ -21,6 +84,20 @@ XMFLOAT4X4 Transform::WorldMatrix(){
 	XMFLOAT4X4 modelMatrix;
 	XMStoreFloat4x4(&modelMatrix, XMMatrixTranspose(model));
 	return modelMatrix;
+};
+
+// Returns an XMVECTOR of the position, rotation, or scale. Unused 4th value is 1.0f.
+XMVECTOR Transform::PosToVector(){
+	XMVECTOR v = XMVectorSet(position.x, position.y, position.z, 0.0f);
+	return v;
+};
+XMVECTOR Transform::RotToVector(){
+	XMVECTOR v = XMVectorSet(rotation.x, rotation.y, rotation.z, 0.0f);
+	return v;
+};
+XMVECTOR Transform::ScaleToVector(){
+	XMVECTOR v = XMVectorSet(scale.x, scale.y, scale.z, 0.0f);
+	return v;
 };
 
 // Returns a model matrix of the pos, rot, and scale

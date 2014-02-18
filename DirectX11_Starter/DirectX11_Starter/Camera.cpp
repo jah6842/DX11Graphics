@@ -13,7 +13,7 @@ Camera::Camera(UINT width,
 	_nearClip = nearClip;
 	_farClip = farClip;
 
-	_transform.position.z = -5;
+	_transform.Move(0,0,-5);
 
 	RecalcProjMatrix();
 };
@@ -36,7 +36,7 @@ XMFLOAT4X4 Camera::GetViewMatrix(){
 
 void Camera::RecalcViewMatrix(){
 	// Set up view matrix (camera)
-	XMVECTOR position	= XMVectorSet(_transform.position.x, _transform.position.y, _transform.position.z, 0);
+	XMVECTOR position	= _transform.PosToVector();
 	XMVECTOR target		= XMVectorSet(0, 0, 1, 0);
 	XMVECTOR up			= XMVectorSet(0, 1, 0, 0);
 	XMMATRIX V			= XMMatrixLookToLH(position, target, up);

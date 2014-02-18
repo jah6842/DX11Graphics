@@ -31,8 +31,9 @@ GameObject::GameObject(){
 };
 
 void GameObject::Update(float dt){
-	transform.rotation.z += XMConvertToRadians(60.0f) * dt;
-	transform.rotation.y += XMConvertToRadians(60.0f) * dt;
+	transform.RotateX(XMConvertToRadians(45.0f) * dt);
+	transform.RotateY(XMConvertToRadians(60.0f) * dt);
+	transform.RotateZ(XMConvertToRadians(90.0f) * dt);
 };
 
 GameObject::~GameObject(){
