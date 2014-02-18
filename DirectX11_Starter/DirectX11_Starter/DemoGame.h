@@ -1,5 +1,6 @@
 #pragma once
 
+#include <time.h>
 #include <vector>
 #include <DirectXMath.h>
 #include <random>

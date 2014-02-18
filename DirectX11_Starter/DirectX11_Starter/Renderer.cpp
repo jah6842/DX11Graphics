@@ -65,8 +65,6 @@ void Renderer::Draw(){
 
 		// Loop through all render items and put them into the instance array
 		for (UINT i = 0; i < renderCount; i++) {
-			//XMFLOAT4X4 mmx = 
-			//XMMATRIX mtx = XMLoadFloat4x4(&mmx);
 			instances[i].modelMatrix = renderList[i]->transform.WorldMatrix();;
 		}
 

@@ -6,6 +6,7 @@
 #include <d3d11.h>
 #include <string>
 #include <iostream>
+#include <random>
 //#include <vld.h>
 
 // Convenience macro for releasing a COM object
@@ -31,6 +32,8 @@
 	#endif
 #endif
 
+
+// Static class to manage DirectX devices and contexts
 class DeviceManager {
 private:
 	static ID3D11Device* _currentDevice;
@@ -51,6 +54,7 @@ public:
 	};
 };
 
+// A high performance timer that uses QueryPerformanceCounter
 class DebugTimer {
 	static __int64 frequency;
 	static __int64 start;

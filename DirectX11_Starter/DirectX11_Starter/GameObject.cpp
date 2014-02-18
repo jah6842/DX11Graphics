@@ -30,10 +30,16 @@ GameObject::GameObject(){
 	mesh = Mesh::GetMesh(L"StandardCube");
 };
 
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_real_distribution<float> dis(0, 5);
+
 void GameObject::Update(float dt){
-	transform.RotateX(XMConvertToRadians(45.0f) * dt);
-	transform.RotateY(XMConvertToRadians(60.0f) * dt);
-	transform.RotateZ(XMConvertToRadians(90.0f) * dt);
+	float randX, randY, randZ;
+	randX = (dis(gen) - 2.5f) * dt;
+	randY = (dis(gen) - 2.5f) * dt;
+	randZ = (dis(gen) - 2.5f) * dt;
+	transform.Move(randX, randY, randZ);
 };
 
 GameObject::~GameObject(){
