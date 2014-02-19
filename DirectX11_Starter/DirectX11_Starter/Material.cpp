@@ -19,7 +19,7 @@ ID3D11Buffer* Material::currentConstantBuffer = nullptr;
 void Material::Cleanup(){
 	typedef std::list<Material*>::iterator matItr;
 	for(matItr iterator = _materials.begin(); iterator != _materials.end(); iterator++) {
-		std::wcout << L"Deleting material: " << (*iterator)->_materialName << std::endl;
+		std::wcout << L"Deleting material: " << (*iterator)->_shaderName << std::endl;
 		delete *iterator;
 	}
 	typedef std::map<std::wstring, ID3D11PixelShader*>::iterator pixelItr;
@@ -51,60 +51,63 @@ void Material::Cleanup(){
 	//ReleaseMacro(currentConstantBuffer);
 };
 
-Material* Material::GetMaterial(std::wstring shaderPrefix, UINT numTextures, std::wstring textureName){
+Material* Material::GetMaterial(MATERIAL_DESCRIPTION description){
 	// Check if the material already exists
 	for(std::list<Material*>::iterator itr = _materials.begin(); itr != _materials.end(); itr++){
-		if((*itr)->Compare(shaderPrefix, numTextures, textureName)){
+		if((*itr)->Compare(description)){
 			return *itr;
 		}
 	}
 
 	//std::wcout << L"New material created: " << shaderPrefix << std::endl;
-	return new Material(shaderPrefix, numTextures, textureName);
+	return new Material(description);
 };
 
-bool Material::Compare(std::wstring shaderPrefix, UINT numTextures, std::wstring texName){
-	//std::wcout << _materialName 
-
-	if(_materialName == shaderPrefix && textureName == texName){
+// Compare two shaders, returns a boolean if they are the same
+bool Material::Compare(MATERIAL_DESCRIPTION description){
+	if(_shaderName == description.shaderName &&
+		_vShaderName == description.vShaderFilename &&
+		_pShaderName == description.pShaderFilename &&
+		_diffuseTextureName == description.diffuseTextureFilename &&
+		_cBufferLayout == description.cBufferLayout){
 		return true;
 	}
 
 	return false;
 };
 
-Material::Material(){
-	textureName = L"";
-	LoadVertexShader(L"../Resources/Shaders/ColoredVertex.cso");
-	LoadPixelShader(L"../Resources/Shaders/ColoredPixel.cso");
-	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);
-};
+// Constructor
+Material::Material(MATERIAL_DESCRIPTION description){
+	_shaderName = description.shaderName;
+	_vShaderName = description.vShaderFilename;
+	_pShaderName = description.pShaderFilename;
+	_cBufferLayout = description.cBufferLayout;
+	_diffuseTextureName = description.diffuseTextureFilename;
 
-// Assumes vertex and pixel shaders have the same prefix
-Material::Material(std::wstring shaderPrefix, UINT numTextures, std::wstring texName){
-	_materialName = shaderPrefix;
-	textureName = texName;
-	LoadVertexShader(L"../Resources/Shaders/" + shaderPrefix + L"Vertex.cso");
-	LoadPixelShader(L"../Resources/Shaders/" + shaderPrefix + L"Pixel.cso");
-	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);
-	if(numTextures > 0)
-		LoadTexture(L"../Resources/Textures/" + textureName);
+	// Load the vertex shader
+	std::wstring vShaderPath = SHADER_PATH;
+	vShaderPath += description.vShaderFilename;
+	LoadVertexShader(vShaderPath);
+
+	// Load the pixel shader
+	std::wstring pShaderPath = SHADER_PATH;
+	pShaderPath += description.pShaderFilename;
+	LoadPixelShader(pShaderPath);
+
+	// Load the constant buffer
+	LoadConstantBuffer(description.cBufferLayout);
+
+	// Load textures
+	std::wstring dTexturePath = TEXTURE_PATH;
+	dTexturePath += description.diffuseTextureFilename;
+	LoadTexture(dTexturePath);
 
 	_materials.push_back(this);
 };
 
-Material::Material(std::wstring vShaderName, std::wstring pShaderName, UINT numTextures, std::wstring texName){
-	textureName = texName;
-	LoadVertexShader(vShaderName);
-	LoadPixelShader(pShaderName);
-	LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT_VS_WVP);
-	if(numTextures > 0)
-		LoadTexture(L"../Resources/Textures/" + textureName);
-};
-
 Material::~Material(){
 	// Most releases are handled by the Material Cleanup() function called when the application exits.
-	ReleaseMacro(vsConstantBuffer);
+	ReleaseMacro(_vsConstantBuffer);
 };
 
 void Material::SetConstantBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p){
@@ -119,7 +122,7 @@ void Material::SetConstantBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p){
 
 	// Update the constant buffer itself
 	deviceContext->UpdateSubresource(
-		vsConstantBuffer,
+		_vsConstantBuffer,
 		0,			
 		NULL,		
 		&vsConstantBufferData,
@@ -132,29 +135,29 @@ void Material::SetInputAssemblerOptions(){
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
 	// Check if we need to change state, if not use the current state.
-	if(vertexShader != currentVertexShader){
-		currentVertexShader = vertexShader;
-		deviceContext->VSSetShader(vertexShader, NULL, 0);
+	if(_vertexShader != currentVertexShader){
+		currentVertexShader = _vertexShader;
+		deviceContext->VSSetShader(_vertexShader, NULL, 0);
 	}
-	if(vsConstantBuffer != currentConstantBuffer){
-		deviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffer);
-		currentConstantBuffer = vsConstantBuffer;
+	if(_vsConstantBuffer != currentConstantBuffer){
+		deviceContext->VSSetConstantBuffers(0, 1, &_vsConstantBuffer);
+		currentConstantBuffer = _vsConstantBuffer;
 	}
-	if(pixelShader != currentPixelShader){
-		currentPixelShader = pixelShader;
-		deviceContext->PSSetShader(pixelShader, NULL, 0);
+	if(_pixelShader != currentPixelShader){
+		currentPixelShader = _pixelShader;
+		deviceContext->PSSetShader(_pixelShader, NULL, 0);
 	}
-	if(texture != currentTexture){
-		currentTexture = texture;
-		deviceContext->PSSetShaderResources(0,1,&texture);
+	if(_diffuseTexture != currentTexture){
+		currentTexture = _diffuseTexture;
+		deviceContext->PSSetShaderResources(0,1,&_diffuseTexture);
 	}
-	if(textureSamplerState != currentTextureSampler){
-		currentTextureSampler = textureSamplerState;
-		deviceContext->PSSetSamplers(0,1,&textureSamplerState);
+	if(_diffuseTextureSamplerState != currentTextureSampler){
+		currentTextureSampler = _diffuseTextureSamplerState;
+		deviceContext->PSSetSamplers(0,1,&_diffuseTextureSamplerState);
 	}
-	if(inputLayout != currentInputLayout){
-		currentInputLayout = inputLayout;
-		deviceContext->IASetInputLayout(inputLayout);
+	if(_inputLayout != currentInputLayout){
+		currentInputLayout = _inputLayout;
+		deviceContext->IASetInputLayout(_inputLayout);
 	}
 };
 
@@ -167,7 +170,9 @@ void Material::LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout){
 
 	switch(layout){
 	case CONSTANT_BUFFER_LAYOUT_VS_WVP:
-		cBufferDesc.ByteWidth			= sizeof(VS_CONSTANT_BUFFER_WVP); break;
+		cBufferDesc.ByteWidth = sizeof(VS_CONSTANT_BUFFER_WVP); break;
+	case CONSTANT_BUFFER_LAYOUT_VS_VPMATRIX:
+		cBufferDesc.ByteWidth = sizeof(VS_CONSTANT_BUFFER_VPMATRIX); break;
 	default:
 		std::wcout << "INVALID CONSTANT BUFFER TYPE" << std::endl;
 	}
@@ -180,14 +185,14 @@ void Material::LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout){
 	HR(device->CreateBuffer(
 		&cBufferDesc,
 		NULL,
-		&vsConstantBuffer));
+		&_vsConstantBuffer));
 };
 
 void Material::LoadPixelShader(std::wstring pShaderName){
 
 	// Check if the shader already exists
 	if(_pixelShaders.count(pShaderName)){
-		pixelShader = _pixelShaders[pShaderName];
+		_pixelShader = _pixelShaders[pShaderName];
 		return;
 	}
 
@@ -203,13 +208,13 @@ void Material::LoadPixelShader(std::wstring pShaderName){
 		psBlob->GetBufferPointer(),
 		psBlob->GetBufferSize(),
 		NULL,
-		&pixelShader));
+		&_pixelShader));
 
 	// Clean up
 	ReleaseMacro(psBlob);
 
 	// Add it to the static list
-	_pixelShaders[pShaderName] = pixelShader;
+	_pixelShaders[pShaderName] = _pixelShader;
 };
 
 // Loads shaders from compiled shader object (.cso) files, and uses the
@@ -219,8 +224,8 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 
 	// Check if the shader already exists
 	if(_vertexShaders.count(vShaderName)){
-		vertexShader = _vertexShaders[vShaderName];
-		inputLayout = _inputLayouts[vShaderName];
+		_vertexShader = _vertexShaders[vShaderName];
+		_inputLayout = _inputLayouts[vShaderName];
 		return;
 	}
 
@@ -236,7 +241,7 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 		vsBlob->GetBufferPointer(),
 		vsBlob->GetBufferSize(),
 		NULL,
-		&vertexShader));
+		&_vertexShader));
 	
 	D3D11_INPUT_ELEMENT_DESC* description = nullptr;
 	UINT descriptionSize = 0;
@@ -263,21 +268,21 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 		descriptionSize,
 		vsBlob->GetBufferPointer(),
 		vsBlob->GetBufferSize(),
-		&inputLayout));
+		&_inputLayout));
 
 	// Clean up
 	ReleaseMacro(vsBlob);
 
 	// Add it to the static list
-	_vertexShaders[vShaderName] = vertexShader;
-	_inputLayouts[vShaderName] = inputLayout;
+	_vertexShaders[vShaderName] = _vertexShader;
+	_inputLayouts[vShaderName] = _inputLayout;
 };
 
 void Material::LoadTexture(std::wstring texName){
 	// Check if the texture already exists
 	if(_textures.count(texName)){
-		texture = _textures[texName];
-		textureSamplerState = _textureSamplers[texName];
+		_diffuseTexture = _textures[texName];
+		_diffuseTextureSamplerState = _textureSamplers[texName];
 		return;
 	}
 
@@ -286,7 +291,7 @@ void Material::LoadTexture(std::wstring texName){
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
 	// NEW DirectXTK Texture Loading
-	CreateWICTextureFromFile(device, deviceContext, texName.c_str(), NULL, &texture);
+	HR(CreateWICTextureFromFile(device, deviceContext, texName.c_str(), NULL, &_diffuseTexture));
 
 	// Describe the Sample State
 	D3D11_SAMPLER_DESC sampDesc;
@@ -300,9 +305,9 @@ void Material::LoadTexture(std::wstring texName){
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
     
 	//Create the Sample State
-	device->CreateSamplerState( &sampDesc, &textureSamplerState );
+	device->CreateSamplerState( &sampDesc, &_diffuseTextureSamplerState );
 
 	// Add it to the static list
-	_textures[texName] = texture;
-	_textureSamplers[texName] = textureSamplerState;
+	_textures[texName] = _diffuseTexture;
+	_textureSamplers[texName] = _diffuseTextureSamplerState;
 };

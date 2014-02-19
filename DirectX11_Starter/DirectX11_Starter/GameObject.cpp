@@ -5,7 +5,7 @@ GameObject::GameObject(std::wstring meshName){
 	Renderer::RegisterGameObject(this);
 
 	// Set the material
-	material = Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
+	//material = Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
 
 	// Set the mesh
 	mesh = Mesh::GetMesh(meshName);
@@ -16,13 +16,21 @@ GameObject::GameObject(){
 	Renderer::RegisterGameObject(this);
 
 	// Set the material
-	static bool flip = false;
-	if(flip == false)
-		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
-	else
-		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture2.png");
+	//static bool flip = false;
+	//if(flip == false)
+		//material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
+		MATERIAL_DESCRIPTION matDesc;
+		matDesc.cBufferLayout = CONSTANT_BUFFER_LAYOUT_VS_WVP;
+		matDesc.diffuseTextureFilename = L"texture2.png";
+		matDesc.vShaderFilename = L"TexturedInstancedVertex.cso";
+		matDesc.pShaderFilename = L"TexturedInstancedPixel.cso";
+		matDesc.shaderName = L"TexturedInstanced";
+
+		material = Material::GetMaterial(matDesc);
+	//else
+	//	material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture2.png");
 	
-	flip = !flip;
+	//flip = !flip;
 	
 	// Set the mesh
 	mesh = Mesh::GetMesh(L"StandardCube");

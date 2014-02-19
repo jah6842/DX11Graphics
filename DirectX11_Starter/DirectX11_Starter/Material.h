@@ -1,6 +1,10 @@
 #ifndef _MATERIAL_H
 #define _MATERIAL_H
 
+// A path to search for resources relative to the .exe
+#define SHADER_PATH L"../Resources/Shaders/";
+#define TEXTURE_PATH L"../Resources/Textures/";
+
 #include <map>
 #include <string>
 #include <d3d11.h>
@@ -15,22 +19,26 @@
 
 using namespace DirectX;
 
+// A description of a material to be created
 struct MATERIAL_DESCRIPTION {
-
+	std::wstring shaderName;
+	std::wstring vShaderFilename;
+	std::wstring pShaderFilename;
+	std::wstring diffuseTextureFilename;
+	CONSTANT_BUFFER_LAYOUT cBufferLayout;
 };
 
 class Material {
 
 public:
-	static Material* GetMaterial(std::wstring shaderPrefix, UINT numTextures = 0, std::wstring textureName = L"");
-	bool Compare(std::wstring shaderPrefix, UINT numTextures = 0, std::wstring textureName = L"");
+	// Gets a material from created shaders if one exists,
+	// if not a new shader is created and added to the list
+	static Material* GetMaterial(MATERIAL_DESCRIPTION description);
+	bool Compare(MATERIAL_DESCRIPTION description);
 
-	// Load the default shaders
-	Material();
 	// Assumes vertex and pixel shaders have the same prefix, optional texture
-	Material(std::wstring shaderPrefix, UINT numTextures = 0, std::wstring textureName = L"");
-	// Load specific vertex and pixel shaders, optional texture
-	Material(std::wstring vShaderName, std::wstring pShaderName, UINT numTextures = 0, std::wstring textureName = L"");
+	Material(MATERIAL_DESCRIPTION description);
+	// Destructor
 	~Material();
 
 	void SetConstantBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p);
@@ -66,18 +74,21 @@ private:
 	void LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout);
 	void LoadTexture(std::wstring texName);
 
-	std::wstring _materialName;
-	ID3D11PixelShader* pixelShader;
-	ID3D11VertexShader* vertexShader;
+	std::wstring _shaderName;
 
-	std::wstring textureName;
-	ID3D11ShaderResourceView* texture;
-	ID3D11SamplerState* textureSamplerState;
+	std::wstring _vShaderName;
+	std::wstring _pShaderName;
+	ID3D11PixelShader* _pixelShader;
+	ID3D11VertexShader* _vertexShader;
 
-	// A few more odds and ends we'll need
-	ID3D11InputLayout* inputLayout;
-	ID3D11Buffer* vsConstantBuffer;
-	//VertexShaderConstantBuffer vsConstantBufferData;
+	std::wstring _diffuseTextureName;
+	ID3D11ShaderResourceView* _diffuseTexture;
+	ID3D11SamplerState* _diffuseTextureSamplerState;
+
+	ID3D11InputLayout* _inputLayout;
+	ID3D11Buffer* _vsConstantBuffer;
+	CONSTANT_BUFFER_LAYOUT _cBufferLayout;
+	//VertexShaderConstantBuffer vsConstantBufferData; // The data is set elsewhere...
 };
 
 #endif // _MATERIAL_H
