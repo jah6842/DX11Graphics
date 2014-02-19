@@ -78,6 +78,7 @@ bool Material::Compare(MATERIAL_DESCRIPTION description){
 
 // Constructor
 Material::Material(MATERIAL_DESCRIPTION description){
+	_isInstanced = false;
 	_shaderName = description.shaderName;
 	_vShaderName = description.vShaderFilename;
 	_pShaderName = description.pShaderFilename;
@@ -110,14 +111,14 @@ Material::~Material(){
 	ReleaseMacro(_vsConstantBuffer);
 };
 
-void Material::SetConstantBufferData(){
+void Material::SetConstantBufferData(XMFLOAT4X4 world){
 	// Get the current device context
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
 	// World, View, Projection matrices
 	if(_cBufferLayout == CONSTANT_BUFFER_LAYOUT_VS_WVP){
 		VS_CONSTANT_BUFFER_WVP wvpData;
-		wvpData.world = Transform::Identity().WorldMatrix();
+		wvpData.world = world;
 		wvpData.view = Camera::MainCamera.GetViewMatrix();
 		wvpData.projection = Camera::MainCamera.GetProjectionMatrix();
 
@@ -271,6 +272,7 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 	if(vShaderName.find(L"TexturedInstanced") != std::wstring::npos){
 		description = VERTEX_DESCRIPTION_POS_UV_INSTANCED;
 		descriptionSize = 6;
+		_isInstanced = true;
 	}
 
 	assert(description != nullptr);
@@ -324,4 +326,8 @@ void Material::LoadTexture(std::wstring texName){
 	// Add it to the static list
 	_textures[texName] = _diffuseTexture;
 	_textureSamplers[texName] = _diffuseTextureSamplerState;
+};
+
+bool Material::IsInstanced(){
+	return _isInstanced;
 };

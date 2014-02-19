@@ -25,10 +25,44 @@ void Renderer::Draw(){
 	GameObject** renderList = new GameObject*[registeredGOs.size()];
 	UINT renderCount = 0;
 
+	for(std::unordered_set<GameObject*>::iterator itr = registeredGOs.begin(); itr != registeredGOs.end(); ++itr){
+		// Check if the object is in the viewing frustum
+		// DISABLED FOR NOW, NOT WORKING!
+		//if(!Camera::MainCamera.PointInFrustum((*itr)->transform.position))
+		//	continue;
+			
+		// Check if the object is using an instanced material
+		if(!(*itr)->material->IsInstanced()){
+			(*itr)->material->SetInputAssemblerOptions();
+			(*itr)->material->SetConstantBufferData((*itr)->transform.WorldMatrix());
+
+			// Set the current vertex buffer
+			UINT stride = Vertex::VertexSize((*itr)->mesh->VertexType());
+			UINT offset = 0;
+			ID3D11Buffer* vBuffer = (*itr)->mesh->VertexBuffer();
+			deviceContext->IASetVertexBuffers(0, 1, &vBuffer, &stride, &offset);
+			// Set the current index buffer
+			deviceContext->IASetIndexBuffer((*itr)->mesh->IndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+			// Set the topology
+			deviceContext->IASetPrimitiveTopology((*itr)->mesh->Topology());
+	
+			// Draw individual model
+			deviceContext->DrawIndexed(
+				(*itr)->mesh->IndexCount(),	// The number of indices we're using in this draw
+				0,
+				0); 
+			drawnObjects++;
+		}
+	}
+
 	Material* currentRenderMaterial = nullptr;
 	// Get all gameobjects with a certain material and draw them
 	for(std::list<Material*>::iterator itr = Material::_materials.begin();
 			itr != Material::_materials.end(); itr++){
+
+		// Check if the material is not instanced, if so it was already rendered
+		if(!(*itr)->IsInstanced())
+			continue;
 
 		// Get the first material from the render list
 		currentRenderMaterial = *itr;
@@ -46,7 +80,6 @@ void Renderer::Draw(){
 			//if(!Camera::MainCamera.PointInFrustum((*itr)->transform.position))
 			//	continue;
 			
-
 			// Check if the object is using the current material
 			if((*itr)->material == currentRenderMaterial){
 				renderList[renderCount] = *itr;
@@ -101,6 +134,7 @@ void Renderer::Draw(){
 		// Set the topology
 		deviceContext->IASetPrimitiveTopology(renderList[0]->mesh->Topology());
 	
+		// Do the drawing
 		deviceContext->DrawIndexedInstanced(
 			renderList[0]->mesh->IndexCount(),	// Index count per instance
 			renderCount,						// # instances to render
@@ -108,12 +142,7 @@ void Renderer::Draw(){
 			0,									// Start vertex location
 			0);									// When to start using instances
 
-		/* Draw individual model
-		deviceContext->DrawIndexed(
-			go->mesh->IndexCount(),	// The number of indices we're using in this draw
-			0,
-			0); */
-
+		// Clean up
 		ReleaseMacro(instanceBuffer);
 		delete[] instances;
 		instances = nullptr;

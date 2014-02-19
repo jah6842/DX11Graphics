@@ -42,8 +42,9 @@ public:
 	// Destructor
 	~Material();
 
-	void SetConstantBufferData();
+	void SetConstantBufferData(XMFLOAT4X4 world = Transform::Identity().WorldMatrix());
 	void SetInputAssemblerOptions();
+	bool IsInstanced();
 
 	// Cleanup all of our static objects
 	static void Cleanup();
@@ -89,7 +90,8 @@ private:
 	ID3D11InputLayout* _inputLayout;
 	ID3D11Buffer* _vsConstantBuffer;
 	CONSTANT_BUFFER_LAYOUT _cBufferLayout;
-	//VertexShaderConstantBuffer vsConstantBufferData; // The data is set elsewhere...
+
+	bool _isInstanced;
 };
 
 #endif // _MATERIAL_H
