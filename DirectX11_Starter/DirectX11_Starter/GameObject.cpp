@@ -16,15 +16,13 @@ GameObject::GameObject(){
 	Renderer::RegisterGameObject(this);
 
 	// Set the material
-	static UINT flip = 1;
-	if(flip % 3 == 0)
+	static bool flip = false;
+	if(flip == false)
 		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
-	else if(flip % 2 == 0)
-		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture2.png");
 	else
-		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"desert-texture.jpg");
+		material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture2.png");
 	
-	flip++;
+	flip = !flip;
 	
 	// Set the mesh
 	mesh = Mesh::GetMesh(L"StandardCube");
@@ -32,13 +30,13 @@ GameObject::GameObject(){
 
 std::random_device rd;
 std::mt19937 gen(rd());
-std::uniform_real_distribution<float> dis(0, 5);
+std::uniform_real_distribution<float> dis(0, 50);
 
 void GameObject::Update(float dt){
 	float randX, randY, randZ;
-	randX = (dis(gen) - 2.5f) * dt;
-	randY = (dis(gen) - 2.5f) * dt;
-	randZ = (dis(gen) - 2.5f) * dt;
+	randX = (dis(gen) - 25) * dt;
+	randY = (dis(gen) - 25) * dt;
+	randZ = (dis(gen) - 25) * dt;
 	transform.Move(randX, randY, randZ);
 };
 

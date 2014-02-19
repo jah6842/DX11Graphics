@@ -1,9 +1,10 @@
 #include "Transform.h"
 
 Transform::Transform(){
-	position = XMFLOAT3(0,0,0);
-	rotation = XMFLOAT3(0,0,0);
-	scale    = XMFLOAT3(1,1,1);
+	_position = XMFLOAT3(0,0,0);
+	_rotation = XMFLOAT3(0,0,0);
+	_scale    = XMFLOAT3(1,1,1);
+	_dirty = true;
 };
 
 Transform::~Transform(){
@@ -12,43 +13,56 @@ Transform::~Transform(){
 
 // Getters
 XMFLOAT3 Transform::Pos(){
-	return position;
+	return _position;
 };
 float Transform::PosX(){
-	return position.x;
+	return _position.x;
 };
 float Transform::PosY(){
-	return position.y;
+	return _position.y;
 };
 float Transform::PosZ(){
-	return position.z;
+	return _position.z;
 };
 
 // Setters
 void Transform::SetPosition(float x, float y, float z){
-	position = XMFLOAT3(x,y,z);
+	_position = XMFLOAT3(x,y,z);
+	_matrix._14 = x;
+	_matrix._24 = y;
+	_matrix._34 = z;
 };
 void Transform::SetPosition(XMFLOAT3 pos){
-	position = pos;
+	_position = pos;
+	_matrix._14 = pos.x;
+	_matrix._24 = pos.y;
+	_matrix._34 = pos.z;
 };
 void Transform::SetRotation(float xRad, float yRad, float zRad){
-	rotation = XMFLOAT3(xRad, yRad, zRad);
+	_rotation = XMFLOAT3(xRad, yRad, zRad);
+	_dirty = true;
 };
 void Transform::SetRotation(XMFLOAT3 rotRad){
-	rotation = rotRad;
+	_rotation = rotRad;
+	_dirty = true;
 };
 void Transform::SetScale(float x, float y, float z){
-	scale = XMFLOAT3(x,y,z);
+	_scale = XMFLOAT3(x,y,z);
+	_dirty = true;
 };
 void Transform::SetScale(XMFLOAT3 sca){
-	scale = sca;
+	_scale = sca;
+	_dirty = true;
 };
 
 // Movement functions
 void Transform::Move(float x, float y, float z){
-	position.x += x;
-	position.y += y;
-	position.z += z;
+	_position.x += x;
+	_position.y += y;
+	_position.z += z;
+	_matrix._14 += x;
+	_matrix._24 += y;
+	_matrix._34 += z;
 };
 void Transform::Move(XMFLOAT3 pos){
 	Move(pos.x, pos.y, pos.z);
@@ -64,47 +78,57 @@ void Transform::Rotate(XMFLOAT3 rotRad){
 	Rotate(rotRad.x, rotRad.y, rotRad.z);
 };
 void Transform::RotateX(float xRad){
-	rotation.x += xRad;
+	_rotation.x += xRad;
+	_dirty = true;
 };
 void Transform::RotateY(float yRad){
-	rotation.y += yRad;
+	_rotation.y += yRad;
+	_dirty = true;
 };
 void Transform::RotateZ(float zRad){
-	rotation.z += zRad;
+	_rotation.z += zRad;
+	_dirty = true;
+};
+
+// Returns a model matrix of the pos, rot, and scale
+void Transform::RecalcWorldMatrix(){
+	XMMATRIX pos = XMMatrixTranslation(_position.x, _position.y, _position.z);
+	XMMATRIX rot = XMMatrixRotationRollPitchYaw(_rotation.x, _rotation.y, _rotation.z);
+	XMMATRIX sca = XMMatrixScaling(_scale.x, _scale.y, _scale.z);
+	
+	XMMATRIX model = sca * rot * pos;
+
+	XMStoreFloat4x4(&_matrix, XMMatrixTranspose(model));
 };
 
 // Returns a model matrix of the pos, rot, and scale
 XMFLOAT4X4 Transform::WorldMatrix(){
-	XMMATRIX pos = XMMatrixTranslation(position.x, position.y, position.z);
-	XMMATRIX rot = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
-	XMMATRIX sca = XMMatrixScaling(scale.x, scale.y, scale.z);
-	
-	XMMATRIX model = sca * rot * pos;
-
-	XMFLOAT4X4 modelMatrix;
-	XMStoreFloat4x4(&modelMatrix, XMMatrixTranspose(model));
-	return modelMatrix;
+	if(_dirty){
+		RecalcWorldMatrix();
+		_dirty = false;
+	}
+	return _matrix;
 };
 
-// Returns an XMVECTOR of the position, rotation, or scale. Unused 4th value is 1.0f.
+// Returns an XMVECTOR of the position, rotation, or scale. Unused 4th value is 0.0f.
 XMVECTOR Transform::PosToVector(){
-	XMVECTOR v = XMVectorSet(position.x, position.y, position.z, 0.0f);
+	XMVECTOR v = XMVectorSet(_position.x, _position.y, _position.z, 0.0f);
 	return v;
 };
 XMVECTOR Transform::RotToVector(){
-	XMVECTOR v = XMVectorSet(rotation.x, rotation.y, rotation.z, 0.0f);
+	XMVECTOR v = XMVectorSet(_rotation.x, _rotation.y, _rotation.z, 0.0f);
 	return v;
 };
 XMVECTOR Transform::ScaleToVector(){
-	XMVECTOR v = XMVectorSet(scale.x, scale.y, scale.z, 0.0f);
+	XMVECTOR v = XMVectorSet(_scale.x, _scale.y, _scale.z, 0.0f);
 	return v;
 };
 
 // Returns a model matrix of the pos, rot, and scale
 XMFLOAT4X4 Transform::WorldMatrix(Transform t){
-	XMMATRIX pos = XMMatrixTranslation(t.position.x, t.position.y, t.position.z);
-	XMMATRIX rot = XMMatrixRotationRollPitchYaw(t.rotation.x, t.rotation.y, t.rotation.z);
-	XMMATRIX sca = XMMatrixScaling(t.scale.x, t.scale.y, t.scale.z);
+	XMMATRIX pos = XMMatrixTranslation(t._position.x, t._position.y, t._position.z);
+	XMMATRIX rot = XMMatrixRotationRollPitchYaw(t._rotation.x, t._rotation.y, t._rotation.z);
+	XMMATRIX sca = XMMatrixScaling(t._scale.x, t._scale.y, t._scale.z);
 	
 	XMMATRIX model = sca * rot * pos;
 
@@ -117,8 +141,8 @@ XMFLOAT4X4 Transform::WorldMatrix(Transform t){
 // Position/rotation 0,0,0, Scale 1,1,1
 Transform Transform::Identity(){
 	Transform t;
-	t.position = XMFLOAT3(0,0,0);
-	t.rotation = XMFLOAT3(0,0,0);
-	t.scale    = XMFLOAT3(1,1,1);
+	t._position = XMFLOAT3(0,0,0);
+	t._rotation = XMFLOAT3(0,0,0);
+	t._scale    = XMFLOAT3(1,1,1);
 	return t;
 };

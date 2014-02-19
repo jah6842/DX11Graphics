@@ -35,10 +35,10 @@ void Renderer::Draw(){
 
 		// Set the proper input options for this material
 		(*itr)->SetConstantBufferData(
-				Camera::MainCamera._transform.WorldMatrix(),
-				//Transform::Identity().WorldMatrix(), // Model matrix of an identity transform
-				Camera::MainCamera.GetViewMatrix(),
-				Camera::MainCamera.GetProjectionMatrix());
+			Camera::MainCamera._transform.WorldMatrix(),
+			//Transform::Identity().WorldMatrix(), // Model matrix of an identity transform
+			Camera::MainCamera.GetViewMatrix(),
+			Camera::MainCamera.GetProjectionMatrix());
 		(*itr)->SetInputAssemblerOptions();
 
 		// Loop through the open list and get all of the objects with the 

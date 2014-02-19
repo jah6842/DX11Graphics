@@ -3,6 +3,7 @@
 
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include "DXUtilities.h"
 
 using namespace DirectX;
 
@@ -38,8 +39,9 @@ public:
 
 	// Returns a model matrix of the pos, rot, and scale
 	XMFLOAT4X4 WorldMatrix();
+	void RecalcWorldMatrix();
 
-	// Returns an XMVECTOR of the position, rotation, or scale. Unused 4th value is 0.
+	// Returns an XMVECTOR of the position, rotation, or scale. Unused 4th value is 0.0f.
 	XMVECTOR PosToVector();
 	XMVECTOR RotToVector();
 	XMVECTOR ScaleToVector();
@@ -52,9 +54,11 @@ public:
 	static XMFLOAT4X4 WorldMatrix(Transform t);
 
 private:
-	XMFLOAT3 position;
-	XMFLOAT3 rotation;
-	XMFLOAT3 scale;
+	XMFLOAT4X4 _matrix;
+	XMFLOAT3 _position;
+	XMFLOAT3 _rotation;
+	XMFLOAT3 _scale;
+	bool _dirty;
 };
 
 #endif // _TRANSFORM_H

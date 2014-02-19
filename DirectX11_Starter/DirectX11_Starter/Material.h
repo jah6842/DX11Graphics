@@ -15,6 +15,10 @@
 
 using namespace DirectX;
 
+struct MATERIAL_DESCRIPTION {
+
+};
+
 class Material {
 
 public:
