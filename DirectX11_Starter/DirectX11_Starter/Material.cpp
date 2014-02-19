@@ -110,24 +110,38 @@ Material::~Material(){
 	ReleaseMacro(_vsConstantBuffer);
 };
 
-void Material::SetConstantBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p){
+void Material::SetConstantBufferData(){
 	// Get the current device context
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
-	// Update local constant buffer data
-	VS_CONSTANT_BUFFER_WVP vsConstantBufferData;
-	vsConstantBufferData.world = w;
-	vsConstantBufferData.view = v;
-	vsConstantBufferData.projection = p;
+	// World, View, Projection matrices
+	if(_cBufferLayout == CONSTANT_BUFFER_LAYOUT_VS_WVP){
+		VS_CONSTANT_BUFFER_WVP wvpData;
+		wvpData.world = Transform::Identity().WorldMatrix();
+		wvpData.view = Camera::MainCamera.GetViewMatrix();
+		wvpData.projection = Camera::MainCamera.GetProjectionMatrix();
 
-	// Update the constant buffer itself
-	deviceContext->UpdateSubresource(
-		_vsConstantBuffer,
-		0,			
-		NULL,		
-		&vsConstantBufferData,
-		0,
-		0);
+		// Update the constant buffer itself
+		deviceContext->UpdateSubresource(_vsConstantBuffer,
+			0,			
+			NULL,		
+			&wvpData,
+			0,
+			0);
+	} 
+	// View*Projection Matrix
+	else if(_cBufferLayout == CONSTANT_BUFFER_LAYOUT_VS_VPMATRIX){
+		VS_CONSTANT_BUFFER_VPMATRIX vpData;
+		vpData.viewProj = Camera::MainCamera.GetViewProjMatrix();
+
+		// Update the constant buffer itself
+		deviceContext->UpdateSubresource(_vsConstantBuffer,
+			0,			
+			NULL,		
+			&vpData,
+			0,
+			0);
+	}
 };
 
 void Material::SetInputAssemblerOptions(){
@@ -296,7 +310,7 @@ void Material::LoadTexture(std::wstring texName){
 	// Describe the Sample State
 	D3D11_SAMPLER_DESC sampDesc;
 	ZeroMemory( &sampDesc, sizeof(sampDesc) );
-	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.Filter = D3D11_FILTER_ANISOTROPIC;
 	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
     sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;

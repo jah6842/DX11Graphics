@@ -34,6 +34,15 @@ XMFLOAT4X4 Camera::GetViewMatrix(){
 	return _view;
 };
 
+XMFLOAT4X4 Camera::GetViewProjMatrix(){
+	XMMATRIX v = XMLoadFloat4x4(&_view);
+	XMMATRIX p = XMLoadFloat4x4(&_projection);
+
+	XMFLOAT4X4 viewProj;
+	XMStoreFloat4x4(&viewProj, (p*v));
+	return viewProj;
+};
+
 void Camera::RecalcViewMatrix(){
 	// Set up view matrix (camera)
 	XMVECTOR position	= _transform.PosToVector();

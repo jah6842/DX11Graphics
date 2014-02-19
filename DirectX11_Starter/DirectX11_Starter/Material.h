@@ -16,6 +16,7 @@
 #include "Vertex.h"
 #include <iostream>
 #include <list>
+#include "Camera.h"
 
 using namespace DirectX;
 
@@ -41,7 +42,7 @@ public:
 	// Destructor
 	~Material();
 
-	void SetConstantBufferData(XMFLOAT4X4 w, XMFLOAT4X4 v, XMFLOAT4X4 p);
+	void SetConstantBufferData();
 	void SetInputAssemblerOptions();
 
 	// Cleanup all of our static objects

@@ -17,6 +17,7 @@ public:
 	void Resize(UINT width, UINT height);
 	XMFLOAT4X4 GetProjectionMatrix();
 	XMFLOAT4X4 GetViewMatrix();
+	XMFLOAT4X4 GetViewProjMatrix();
 
 	bool PointInFrustum(float x, float y, float z);
 	bool PointInFrustum(XMFLOAT3 position);

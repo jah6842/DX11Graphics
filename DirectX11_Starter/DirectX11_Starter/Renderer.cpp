@@ -34,12 +34,8 @@ void Renderer::Draw(){
 		currentRenderMaterial = *itr;
 
 		// Set the proper input options for this material
-		(*itr)->SetConstantBufferData(
-			Camera::MainCamera._transform.WorldMatrix(),
-			//Transform::Identity().WorldMatrix(), // Model matrix of an identity transform
-			Camera::MainCamera.GetViewMatrix(),
-			Camera::MainCamera.GetProjectionMatrix());
 		(*itr)->SetInputAssemblerOptions();
+		(*itr)->SetConstantBufferData();
 
 		// Loop through the open list and get all of the objects with the 
 		// same material that we should add to the render list.

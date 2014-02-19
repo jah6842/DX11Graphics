@@ -20,7 +20,7 @@ GameObject::GameObject(){
 	//if(flip == false)
 		//material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
 		MATERIAL_DESCRIPTION matDesc;
-		matDesc.cBufferLayout = CONSTANT_BUFFER_LAYOUT_VS_WVP;
+		matDesc.cBufferLayout = CONSTANT_BUFFER_LAYOUT_VS_VPMATRIX;
 		matDesc.diffuseTextureFilename = L"texture2.png";
 		matDesc.vShaderFilename = L"TexturedInstancedVertex.cso";
 		matDesc.pShaderFilename = L"TexturedInstancedPixel.cso";

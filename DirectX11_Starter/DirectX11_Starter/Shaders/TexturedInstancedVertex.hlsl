@@ -4,10 +4,7 @@
 //   slightly different data (at least for the world matrix)
 cbuffer perModel : register( b0 )
 {
-	// TODO: Ideally remove these and replace with a single viewProjection matrix.
-	matrix world;
-	matrix view;
-	matrix projection;
+	matrix viewProj;
 };
 
 // Defines what kind of data to expect as input
@@ -38,9 +35,8 @@ VS_OUTPUT main( VertexShaderInput input )
 	VS_OUTPUT output;
 
 	// Calculate output position
-	matrix viewProj = mul(view, projection); // TODO: Optimize this to just pass in viewProj in the constant buffer
-	matrix final = mul(input.instancePosition, viewProj);
-	output.Pos = mul(float4(input.position, 1.0f), final);
+	// vertex position vector * instance matrix * view/projection matrix
+	output.Pos = mul(mul(float4(input.position, 1.0f), input.instancePosition), viewProj);
 
 	// Texture UVs
 	output.TexCoord = input.TexCoord;

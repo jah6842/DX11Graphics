@@ -18,8 +18,8 @@ struct VS_CONSTANT_BUFFER_WVP
 	XMFLOAT4X4 projection;
 };
 
-struct VS_CONSTANT_BUFFER_VPMATRIX{
-	XMFLOAT4X4 viewProjection;
+struct VS_CONSTANT_BUFFER_VPMATRIX {
+	XMFLOAT4X4 viewProj;
 };
 
 #endif // _CONSTANT_BUFFER_H
