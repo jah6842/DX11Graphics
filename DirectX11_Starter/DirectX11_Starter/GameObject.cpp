@@ -16,7 +16,7 @@ GameObject::GameObject(){
 	Renderer::RegisterGameObject(this);
 
 	// Set the material
-	static bool flip = false;
+	static int flip = 0;
 	//if(flip == false)
 		//material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
 	MATERIAL_DESCRIPTION matDesc;
@@ -26,17 +26,19 @@ GameObject::GameObject(){
 	matDesc.pShaderFilename = L"TexturedInstancedPixel.cso";
 	matDesc.shaderName = L"TexturedInstanced";
 
-	if(flip)
+	if(flip == 0){
 		material = Material::GetMaterial(matDesc);
-	else{
-		matDesc.vShaderFilename = L"ColoredVertex.cso";
-		matDesc.pShaderFilename = L"ColoredPixel.cso";
-		matDesc.shaderName = L"Colored";
-		matDesc.cBufferLayout = CONSTANT_BUFFER_LAYOUT_VS_WVP;
+	} else if(flip == 1){
+		matDesc.diffuseTextureFilename = L"desert-texture.jpg";
+		material =  Material::GetMaterial(matDesc);
+	} else if(flip == 2){
+		matDesc.diffuseTextureFilename = L"texture.png";
 		material =  Material::GetMaterial(matDesc);
 	}
 	
-	flip = !flip;
+	flip++;
+	if(flip > 2)
+		flip = 0;
 	
 	// Set the mesh
 	mesh = Mesh::GetMesh(L"StandardCube");

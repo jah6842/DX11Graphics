@@ -241,8 +241,11 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 	if(_vertexShaders.count(vShaderName)){
 		_vertexShader = _vertexShaders[vShaderName];
 		_inputLayout = _inputLayouts[vShaderName];
+		_isInstanced = true;
 		return;
 	}
+
+	std::wcout << "Creating vertex shader: " << vShaderName << std::endl;
 
 	// Get the current device
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();

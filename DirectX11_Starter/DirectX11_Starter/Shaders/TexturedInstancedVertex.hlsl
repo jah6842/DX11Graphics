@@ -16,8 +16,8 @@ struct VertexShaderInput
 	matrix instancePosition : INSTANCEPOS;
 };
 
-Texture2D ObjTexture;
-SamplerState ObjSamplerState;
+Texture2D ObjTexture : register(t0);
+SamplerState ObjSamplerState : register(s0);
 
 // Defines the output data of our vertex shader
 // - At a minimum, you'll need an SV_POSITION
