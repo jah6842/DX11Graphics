@@ -14,7 +14,7 @@ cbuffer perModel : register( b0 )
 struct VertexShaderInput
 {
 	float3 position		: POSITION;
-	float2 TexCoord		: TEXCOORD;
+	float2 TexCoord		: TEXCOORD0;
 };
 
 Texture2D ObjTexture;
@@ -26,7 +26,7 @@ SamplerState ObjSamplerState;
 struct VS_OUTPUT
 {
 	float4 Pos : SV_POSITION;
-	float2 TexCoord : TEXCOORD;
+	float2 TexCoord : TEXCOORD0;
 };
 
 // The entry point for our vertex shader

@@ -10,7 +10,7 @@ struct VertexToPixel
 struct VS_OUTPUT
 {
 	float4 Pos : SV_POSITION;
-	float2 TexCoord : TEXCOORD;
+	float2 TexCoord : TEXCOORD0;
 };
 
 Texture2D ObjTexture;
