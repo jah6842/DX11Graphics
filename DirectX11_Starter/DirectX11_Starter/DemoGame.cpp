@@ -86,6 +86,8 @@ bool DemoGame::Init()
 	// Set up the main camera
 	Camera::MainCamera = Camera(windowWidth, windowHeight);
 
+	DebugTimer::Start();
+
 	// Create some game objects
 	for(int i = 0; i < NUM_GO; i++){
 		for(int j = 0; j < NUM_GO; j++){
@@ -96,6 +98,9 @@ bool DemoGame::Init()
 			}
 		}
 	}
+
+	LOG(L"TIME TAKEN TO CREATE GAMEOBJECTS");
+	DebugTimer::Stop();
 
 	return true;
 }

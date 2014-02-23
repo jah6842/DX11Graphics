@@ -44,8 +44,8 @@ enum {
 // A description of a material to be created
 struct MATERIAL_DESCRIPTION {
 	std::wstring materialName;
-	std::wstring vShaderFilename;
-	std::wstring pShaderFilename;
+	UINT vShaderID;
+	UINT pShaderID;
 	UINT diffuseTextureID;
 	CONSTANT_BUFFER_LAYOUT cBufferLayout;
 };
@@ -55,6 +55,7 @@ class Material {
 public:
 	// Gets a material from created shaders if one exists,
 	// if not a new shader is created and added to the list
+	static std::list<Material*> _materials;
 	static Material* GetMaterial(MATERIAL_DESCRIPTION description);
 	bool Compare(MATERIAL_DESCRIPTION description);
 
@@ -70,16 +71,16 @@ public:
 	// Cleanup all of our static objects
 	static void Cleanup();
 
-	static std::list<Material*> _materials;
-
 private:
 
 	static const WCHAR* textureNames[];
+	static const WCHAR* vShaderNames[];
+	static const WCHAR* pShaderNames[];
 
 	// Static containers so we don't end up with duplicates
-	static std::map<std::wstring, ID3D11VertexShader*> _vertexShaders;
-	static std::map<std::wstring, ID3D11PixelShader*> _pixelShaders;
-	static std::map<std::wstring, ID3D11InputLayout*> _inputLayouts;
+	static std::map<UINT, ID3D11VertexShader*> _vertexShaders;
+	static std::map<UINT, ID3D11PixelShader*> _pixelShaders;
+	static std::map<UINT, ID3D11InputLayout*> _inputLayouts;
 	static std::map<UINT, ID3D11ShaderResourceView*> _textures;
 	static std::map<UINT, ID3D11SamplerState*> _textureSamplers;
 	
@@ -90,15 +91,15 @@ private:
 	static ID3D11PixelShader* currentPixelShader;
 	static ID3D11Buffer* currentConstantBuffer;
 
-	void LoadVertexShader(std::wstring vShaderName);
-	void LoadPixelShader(std::wstring pShaderName);
+	void LoadVertexShader(UINT vShaderID);
+	void LoadPixelShader(UINT pShaderID);
 	void LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout);
 	void LoadTexture(UINT textureID);
 
 	std::wstring _materialName;
 
-	std::wstring _vShaderName;
-	std::wstring _pShaderName;
+	UINT _vShaderID;
+	UINT _pShaderID;
 	ID3D11PixelShader* _pixelShader;
 	ID3D11VertexShader* _vertexShader;
 
