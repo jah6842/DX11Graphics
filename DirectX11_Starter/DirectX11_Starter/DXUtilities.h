@@ -78,10 +78,10 @@ public:
 
 // Debug logging
 #if defined(DEBUG) | defined(_DEBUG)
-static void LogString(std::wstring s);
-static void LogString(std::wstring s1, std::wstring s2);
-static void LogString(std::wstring s1, std::wstring s2, std::wstring s3);
-static void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4);
+void LogString(std::wstring s);
+void LogString(std::wstring s1, std::wstring s2);
+void LogString(std::wstring s1, std::wstring s2, std::wstring s3);
+void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4);
 #endif
 
 #endif // _DXUTILITIES_H

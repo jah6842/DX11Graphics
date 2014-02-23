@@ -1,12 +1,18 @@
 #include "Material.h"
 
+// Texture names (SHOULD BE IN THE SAME ORDER AS THE TEXTURE ENUM IN THE HEADER!)
+const WCHAR* Material::textureNames[] = { 
+	L"marble.png", 
+	L"sand.jpg",
+	L"scales.png" };
+
 // Static variables
 std::list<Material*> Material::_materials;
 std::map<std::wstring, ID3D11PixelShader*> Material::_pixelShaders;
 std::map<std::wstring, ID3D11VertexShader*> Material::_vertexShaders;
 std::map<std::wstring, ID3D11InputLayout*> Material::_inputLayouts;
-std::map<std::wstring, ID3D11ShaderResourceView*> Material::_textures;
-std::map<std::wstring, ID3D11SamplerState*> Material::_textureSamplers;
+std::map<UINT, ID3D11ShaderResourceView*> Material::_textures;
+std::map<UINT, ID3D11SamplerState*> Material::_textureSamplers;
 
 ID3D11PixelShader* Material::currentPixelShader = nullptr;
 ID3D11VertexShader* Material::currentVertexShader = nullptr;
@@ -19,7 +25,7 @@ ID3D11Buffer* Material::currentConstantBuffer = nullptr;
 void Material::Cleanup(){
 	typedef std::list<Material*>::iterator matItr;
 	for(matItr iterator = _materials.begin(); iterator != _materials.end(); iterator++) {
-		LOG(L"Deleting material: ", (*iterator)->_shaderName);
+		LOG(L"Deleting material: ", (*iterator)->_materialName);
 		delete *iterator;
 	}
 	typedef std::map<std::wstring, ID3D11PixelShader*>::iterator pixelItr;
@@ -37,15 +43,15 @@ void Material::Cleanup(){
 		ReleaseMacro(iterator->second);
 		LOG(L"  Released Input Layout: ", iterator->first);
 	}
-	typedef std::map<std::wstring, ID3D11ShaderResourceView*>::iterator texItr;
+	typedef std::map<UINT, ID3D11ShaderResourceView*>::iterator texItr;
 	for(texItr iterator = _textures.begin(); iterator != _textures.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		LOG(L"  Released Shader Resource View: ", iterator->first);
+		LOG(L"  Released Shader Resource View: ", std::to_wstring(iterator->first));
 	}
-	typedef std::map<std::wstring, ID3D11SamplerState*>::iterator texSampItr;
+	typedef std::map<UINT, ID3D11SamplerState*>::iterator texSampItr;
 	for(texSampItr iterator = _textureSamplers.begin(); iterator != _textureSamplers.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		LOG(L"  Released Sampler State: ", iterator->first);
+		LOG(L"  Released Sampler State: ", std::to_wstring(iterator->first));
 	}
 };
 
@@ -57,16 +63,16 @@ Material* Material::GetMaterial(MATERIAL_DESCRIPTION description){
 		}
 	}
 
-	LOG(L"New material created: ", description.shaderName);
+	LOG(L"New material created: ", description.materialName);
 	return new Material(description);
 };
 
 // Compare two shaders, returns a boolean if they are the same
 bool Material::Compare(MATERIAL_DESCRIPTION description){
-	if(_shaderName == description.shaderName &&
+	if(_materialName == description.materialName &&
 		_vShaderName == description.vShaderFilename &&
 		_pShaderName == description.pShaderFilename &&
-		_diffuseTextureName == description.diffuseTextureFilename &&
+		_diffuseTextureID == description.diffuseTextureID &&
 		_cBufferLayout == description.cBufferLayout){
 		return true;
 	}
@@ -77,11 +83,11 @@ bool Material::Compare(MATERIAL_DESCRIPTION description){
 // Constructor
 Material::Material(MATERIAL_DESCRIPTION description){
 	_isInstanced = false;
-	_shaderName = description.shaderName;
+	_materialName = description.materialName;
 	_vShaderName = description.vShaderFilename;
 	_pShaderName = description.pShaderFilename;
 	_cBufferLayout = description.cBufferLayout;
-	_diffuseTextureName = description.diffuseTextureFilename;
+	_diffuseTextureID = description.diffuseTextureID;
 
 	// Load the vertex shader
 	std::wstring vShaderPath = SHADER_PATH;
@@ -97,9 +103,7 @@ Material::Material(MATERIAL_DESCRIPTION description){
 	LoadConstantBuffer(description.cBufferLayout);
 
 	// Load textures
-	std::wstring dTexturePath = TEXTURE_PATH;
-	dTexturePath += description.diffuseTextureFilename;
-	LoadTexture(dTexturePath);
+	LoadTexture(description.diffuseTextureID);
 
 	_materials.push_back(this);
 };
@@ -295,11 +299,11 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 	_inputLayouts[vShaderName] = _inputLayout;
 };
 
-void Material::LoadTexture(std::wstring texName){
+void Material::LoadTexture(UINT textureID){
 	// Check if the texture already exists
-	if(_textures.count(texName)){
-		_diffuseTexture = _textures[texName];
-		_diffuseTextureSamplerState = _textureSamplers[texName];
+	if(_textures.count(textureID)){
+		_diffuseTexture = _textures[textureID];
+		_diffuseTextureSamplerState = _textureSamplers[textureID];
 		return;
 	}
 
@@ -307,8 +311,11 @@ void Material::LoadTexture(std::wstring texName){
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();
 	ID3D11DeviceContext* deviceContext = DeviceManager::GetCurrentDeviceContext();
 
+	std::wstring dTexturePath = TEXTURE_PATH;
+	dTexturePath += textureNames[textureID];
+
 	// NEW DirectXTK Texture Loading
-	HR(CreateWICTextureFromFile(device, deviceContext, texName.c_str(), NULL, &_diffuseTexture));
+	HR(CreateWICTextureFromFile(device, deviceContext, dTexturePath.c_str(), NULL, &_diffuseTexture));
 
 	// Describe the Sample State
 	D3D11_SAMPLER_DESC sampDesc;
@@ -325,8 +332,8 @@ void Material::LoadTexture(std::wstring texName){
 	device->CreateSamplerState( &sampDesc, &_diffuseTextureSamplerState );
 
 	// Add it to the static list
-	_textures[texName] = _diffuseTexture;
-	_textureSamplers[texName] = _diffuseTextureSamplerState;
+	_textures[textureID] = _diffuseTexture;
+	_textureSamplers[textureID] = _diffuseTextureSamplerState;
 };
 
 bool Material::IsInstanced(){

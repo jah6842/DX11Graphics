@@ -21,18 +21,18 @@ GameObject::GameObject(){
 		//material =  Material::GetMaterial(L"TexturedInstanced", 1, L"texture.png");
 	MATERIAL_DESCRIPTION matDesc;
 	matDesc.cBufferLayout = CONSTANT_BUFFER_LAYOUT_VS_VPMATRIX;
-	matDesc.diffuseTextureFilename = L"texture2.png";
+	matDesc.diffuseTextureID = TEXTURE_MARBLE_PNG;
 	matDesc.vShaderFilename = L"TexturedInstancedVertex.cso";
 	matDesc.pShaderFilename = L"TexturedInstancedPixel.cso";
-	matDesc.shaderName = L"TexturedInstanced";
+	matDesc.materialName = L"TexturedInstanced";
 
 	if(flip == 0){
 		material = Material::GetMaterial(matDesc);
 	} else if(flip == 1){
-		matDesc.diffuseTextureFilename = L"desert-texture.jpg";
+		matDesc.diffuseTextureID = TEXTURE_SAND_JPG;
 		material =  Material::GetMaterial(matDesc);
 	} else if(flip == 2){
-		matDesc.diffuseTextureFilename = L"texture.png";
+		matDesc.diffuseTextureID = TEXTURE_SCALES_PNG;
 		material =  Material::GetMaterial(matDesc);
 	}
 	

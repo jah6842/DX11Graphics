@@ -20,12 +20,33 @@
 
 using namespace DirectX;
 
+// Vertex shaders
+enum {
+	VSHADER_COLORED,
+	VSHADER_TEXTURED,
+	VSHADER_TEXTURED_INSTANCED
+};
+
+// Pixel shaders
+enum {
+	PSHADER_COLORED,
+	PSHADER_TEXTURED,
+	PSHADER_TEXTURED_INSTANCED 
+};
+
+// Textures
+enum {
+	TEXTURE_MARBLE_PNG,
+	TEXTURE_SAND_JPG,
+	TEXTURE_SCALES_PNG
+};
+
 // A description of a material to be created
 struct MATERIAL_DESCRIPTION {
-	std::wstring shaderName;
+	std::wstring materialName;
 	std::wstring vShaderFilename;
 	std::wstring pShaderFilename;
-	std::wstring diffuseTextureFilename;
+	UINT diffuseTextureID;
 	CONSTANT_BUFFER_LAYOUT cBufferLayout;
 };
 
@@ -53,37 +74,35 @@ public:
 
 private:
 
+	static const WCHAR* textureNames[];
+
 	// Static containers so we don't end up with duplicates
-	static std::map<std::wstring, ID3D11PixelShader*> _pixelShaders;
-	static ID3D11PixelShader* currentPixelShader;
-
 	static std::map<std::wstring, ID3D11VertexShader*> _vertexShaders;
-	static ID3D11VertexShader* currentVertexShader;
-
+	static std::map<std::wstring, ID3D11PixelShader*> _pixelShaders;
 	static std::map<std::wstring, ID3D11InputLayout*> _inputLayouts;
-	static ID3D11InputLayout* currentInputLayout;
-
-	static std::map<std::wstring, ID3D11ShaderResourceView*> _textures;
-	static ID3D11ShaderResourceView* currentTexture;
-
-	static std::map<std::wstring, ID3D11SamplerState*> _textureSamplers;
+	static std::map<UINT, ID3D11ShaderResourceView*> _textures;
+	static std::map<UINT, ID3D11SamplerState*> _textureSamplers;
+	
 	static ID3D11SamplerState* currentTextureSampler;
-
+	static ID3D11ShaderResourceView* currentTexture;
+	static ID3D11InputLayout* currentInputLayout;
+	static ID3D11VertexShader* currentVertexShader;
+	static ID3D11PixelShader* currentPixelShader;
 	static ID3D11Buffer* currentConstantBuffer;
 
 	void LoadVertexShader(std::wstring vShaderName);
 	void LoadPixelShader(std::wstring pShaderName);
 	void LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout);
-	void LoadTexture(std::wstring texName);
+	void LoadTexture(UINT textureID);
 
-	std::wstring _shaderName;
+	std::wstring _materialName;
 
 	std::wstring _vShaderName;
 	std::wstring _pShaderName;
 	ID3D11PixelShader* _pixelShader;
 	ID3D11VertexShader* _vertexShader;
 
-	std::wstring _diffuseTextureName;
+	UINT _diffuseTextureID;
 	ID3D11ShaderResourceView* _diffuseTexture;
 	ID3D11SamplerState* _diffuseTextureSamplerState;
 
