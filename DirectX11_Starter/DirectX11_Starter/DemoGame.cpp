@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------------
+/* PROJECT SETTINGS COMMENTS
 //  A few notes on project settings
 //
 //  - The project is set to use the UNICODE character set
@@ -19,10 +19,8 @@
 //    output directory, since we need to load the shader files at run time
 //    - This was changed in Project Properties > Config Properties > Debugging > Working Directory
 //
-// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------*/
 
-#include <Windows.h>
-#include <d3dcompiler.h>
 #include "DemoGame.h"
 
 #pragma region Win32 Entry Point (WinMain)
@@ -35,6 +33,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 
+	// Give our program a console for debugging
 	AllocConsole();
 	AttachConsole(GetCurrentProcessId());
 	freopen("CON", "w", stdout);
@@ -156,19 +155,13 @@ void DemoGame::UpdateScene(float dt)
 // Clear the screen, redraw everything, present
 void DemoGame::DrawScene()
 {
-	const float color[4] = {0.4f, 0.6f, 0.75f, 0.0f};
-
 	// Clear the buffer
-	deviceContext->ClearRenderTargetView(renderTargetView, color);
+	deviceContext->ClearRenderTargetView(renderTargetView, Colors::Aqua);
 	deviceContext->ClearDepthStencilView(
 		depthStencilView, 
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f,
 		0);
-
-	for(UINT i = 0; i < gameobjects.size(); i++){
-		//gameobjects[i]->Render();
-	}
 
 	Renderer::Draw();
 

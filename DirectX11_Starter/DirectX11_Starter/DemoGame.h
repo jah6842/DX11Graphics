@@ -1,14 +1,12 @@
 #pragma once
 
-#include <time.h>
-#include <vector>
 #include <DirectXMath.h>
-#include <random>
+#include <DirectXColors.h>
 #include "DXGame.h"
 #include "GameObject.h"
 #include "Camera.h"
 #include "Renderer.h"
-//#include <vld.h>
+#include <vector>
 
 // Include run-time memory checking in debug builds
 #if defined(DEBUG) || defined(_DEBUG)

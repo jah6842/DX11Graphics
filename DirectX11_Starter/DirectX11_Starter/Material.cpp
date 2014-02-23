@@ -19,36 +19,34 @@ ID3D11Buffer* Material::currentConstantBuffer = nullptr;
 void Material::Cleanup(){
 	typedef std::list<Material*>::iterator matItr;
 	for(matItr iterator = _materials.begin(); iterator != _materials.end(); iterator++) {
-		std::wcout << L"Deleting material: " << (*iterator)->_shaderName << std::endl;
+		LOG(L"Deleting material: ", (*iterator)->_shaderName);
 		delete *iterator;
 	}
 	typedef std::map<std::wstring, ID3D11PixelShader*>::iterator pixelItr;
 	for(pixelItr iterator = _pixelShaders.begin(); iterator != _pixelShaders.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"  Released Pixel Shader: " << iterator->first.c_str() << std::endl;
+		LOG(L"  Released Pixel Shader: ", iterator->first);
 	}
 	typedef std::map<std::wstring, ID3D11VertexShader*>::iterator vertexItr;
 	for(vertexItr iterator = _vertexShaders.begin(); iterator != _vertexShaders.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"  Released Vertex Shader: " << iterator->first.c_str() << std::endl;
+		LOG(L"  Released Vertex Shader: ", iterator->first);
 	}
 	typedef std::map<std::wstring, ID3D11InputLayout*>::iterator inputItr;
 	for(inputItr iterator = _inputLayouts.begin(); iterator != _inputLayouts.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"  Released Input Layout: " << iterator->first.c_str() << std::endl;
+		LOG(L"  Released Input Layout: ", iterator->first);
 	}
 	typedef std::map<std::wstring, ID3D11ShaderResourceView*>::iterator texItr;
 	for(texItr iterator = _textures.begin(); iterator != _textures.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"  Released Shader Resource View: " << iterator->first.c_str() << std::endl;
+		LOG(L"  Released Shader Resource View: ", iterator->first);
 	}
 	typedef std::map<std::wstring, ID3D11SamplerState*>::iterator texSampItr;
 	for(texSampItr iterator = _textureSamplers.begin(); iterator != _textureSamplers.end(); iterator++) {
 		ReleaseMacro(iterator->second);
-		std::wcout << L"  Released Sampler State: " << iterator->first.c_str() << std::endl;
+		LOG(L"  Released Sampler State: ", iterator->first);
 	}
-
-	//ReleaseMacro(currentConstantBuffer);
 };
 
 Material* Material::GetMaterial(MATERIAL_DESCRIPTION description){
@@ -59,7 +57,7 @@ Material* Material::GetMaterial(MATERIAL_DESCRIPTION description){
 		}
 	}
 
-	//std::wcout << L"New material created: " << shaderPrefix << std::endl;
+	LOG(L"New material created: ", description.shaderName);
 	return new Material(description);
 };
 
@@ -189,7 +187,7 @@ void Material::LoadConstantBuffer(CONSTANT_BUFFER_LAYOUT layout){
 	case CONSTANT_BUFFER_LAYOUT_VS_VPMATRIX:
 		cBufferDesc.ByteWidth = sizeof(VS_CONSTANT_BUFFER_VPMATRIX); break;
 	default:
-		std::wcout << "INVALID CONSTANT BUFFER TYPE" << std::endl;
+		LOG(L"INVALID CONSTANT BUFFER TYPE");
 	}
 
 	cBufferDesc.Usage				= D3D11_USAGE_DEFAULT;
@@ -245,7 +243,7 @@ void Material::LoadVertexShader(std::wstring vShaderName){
 		return;
 	}
 
-	std::wcout << "Creating vertex shader: " << vShaderName << std::endl;
+	LOG(L"Creating vertex shader: ", vShaderName);
 
 	// Get the current device
 	ID3D11Device* device = DeviceManager::GetCurrentDevice();

@@ -6,11 +6,14 @@
 #include <d3d11.h>
 #include <string>
 #include <iostream>
-#include <random>
+//#include <random>
 //#include <vld.h>
 
 // Convenience macro for releasing a COM object
 #define ReleaseMacro(x) { if(x){ x->Release(); x = 0; } }
+
+
+
 
 // Macro for popping up a text box based
 // on a failed HRESULT and then quitting (only in debug builds)
@@ -63,5 +66,22 @@ public:
 	static void Start();
 	static void Stop();
 };
+
+// Macro for debug logging
+// In debug builds will log to console
+// In release builds will replace with a NO-OP
+#if defined(DEBUG) | defined(_DEBUG)
+	#define LOG LogString													
+#else
+	#define LOG __noop
+#endif
+
+// Debug logging
+#if defined(DEBUG) | defined(_DEBUG)
+static void LogString(std::wstring s);
+static void LogString(std::wstring s1, std::wstring s2);
+static void LogString(std::wstring s1, std::wstring s2, std::wstring s3);
+static void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4);
+#endif
 
 #endif // _DXUTILITIES_H

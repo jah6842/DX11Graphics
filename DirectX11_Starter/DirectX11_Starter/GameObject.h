@@ -7,6 +7,8 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "Renderer.h"
+// Currently used to randomly move position, will have a library for this later.
+#include <random>
 
 class GameObject {
 

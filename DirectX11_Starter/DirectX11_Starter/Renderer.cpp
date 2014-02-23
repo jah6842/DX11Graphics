@@ -12,6 +12,7 @@ Renderer::~Renderer(){
 
 ID3D11Buffer* instanceBuffer = nullptr;
 InstanceType* instances;
+UINT instanceBufferSize;
 D3D11_BUFFER_DESC instanceBufferDesc;
 D3D11_SUBRESOURCE_DATA instanceData;
 
@@ -91,6 +92,7 @@ void Renderer::Draw(){
 
 		// Allocate memory for all of the instance data
 		instances = new InstanceType[renderCount];
+		
 
 		// Loop through all render items and put them into the instance array
 		for (UINT i = 0; i < renderCount; i++) {

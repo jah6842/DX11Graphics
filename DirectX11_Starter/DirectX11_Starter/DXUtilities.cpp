@@ -25,5 +25,18 @@ void DebugTimer::Stop(){
 
 	__int64 diff = stop - start;
 	double seconds = (double)diff / (double)frequency;
-	std::wcout << "Time taken: " << seconds*1000 << "ms" << std::endl;
+	LOG(L"Time taken: ", std::to_wstring(seconds*1000.0f), L"ms");
+};
+
+void LogString(std::wstring s){
+	std::wcout << s << std::endl;
+};
+void LogString(std::wstring s1, std::wstring s2){
+	std::wcout << s1 << s2 << std::endl;
+};
+void LogString(std::wstring s1, std::wstring s2, std::wstring s3){
+	std::wcout << s1 << s2 << s3 << std::endl;
+};
+void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4){
+	std::wcout << s1 << s2 << s3 << s4 << std::endl;
 };

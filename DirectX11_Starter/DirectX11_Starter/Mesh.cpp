@@ -8,9 +8,8 @@ void Mesh::Cleanup(){
 		//iterator->second->~Mesh();
 		delete iterator->second;
 		iterator->second = nullptr;
-		std::wcout << L"Released: " << iterator->first.c_str() << std::endl;
+		LOG(L"Released: ", iterator->first);
 	}
-
 };
 
 // Construct a mesh without vertices
