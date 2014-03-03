@@ -85,7 +85,7 @@
     <ClCompile Include="DemoGame.cpp" />
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DXGame.cpp" />
-    <ClCompile Include="DXUtilities.cpp" />
+    <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -100,11 +100,10 @@
     <ClInclude Include="DemoGame.h" />
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DXGame.h" />
-    <ClInclude Include="DXUtilities.h" />
+    <ClInclude Include="Utilities.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="MaterialData.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Transform.h" />

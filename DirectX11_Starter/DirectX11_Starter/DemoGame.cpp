@@ -85,8 +85,10 @@ bool DemoGame::Init()
 
 	// Set up the main camera
 	Camera::MainCamera = Camera(windowWidth, windowHeight);
+	// Move the camera away from the origin
+	Camera::MainCamera.transform.SetPosition(0.0f, 0.0f, -5.0f);
 
-	DebugTimer::Start();
+	DebugTimer::Start(L"TIME TAKEN TO CREATE GAMEOBJECTS");
 
 	// Create some game objects
 	for(int i = 0; i < NUM_GO; i++){
@@ -99,7 +101,6 @@ bool DemoGame::Init()
 		}
 	}
 
-	LOG(L"TIME TAKEN TO CREATE GAMEOBJECTS");
 	DebugTimer::Stop();
 
 	return true;
@@ -142,13 +143,13 @@ void DemoGame::UpdateScene(float dt)
 
 	float speed = 10.0f;
 	if(GetAsyncKeyState('W'))
-		Camera::MainCamera._transform.Move(0, speed * dt, 0);
+		Camera::MainCamera.transform.Move(0, speed * dt, 0);
 	if(GetAsyncKeyState('S'))
-		Camera::MainCamera._transform.Move(0, -speed * dt, 0);
+		Camera::MainCamera.transform.Move(0, -speed * dt, 0);
 	if(GetAsyncKeyState('A'))
-		Camera::MainCamera._transform.Move(-speed * dt, 0, 0);
+		Camera::MainCamera.transform.Move(-speed * dt, 0, 0);
 	if(GetAsyncKeyState('D'))
-		Camera::MainCamera._transform.Move(speed * dt, 0, 0);
+		Camera::MainCamera.transform.Move(speed * dt, 0, 0);
 
 	Camera::MainCamera.Update(dt);
 
@@ -200,6 +201,6 @@ void DemoGame::OnMouseMove(WPARAM btnState, int x, int y)
 }
 
 void DemoGame::OnMouseScroll(WPARAM whlState, int delta){
-	Camera::MainCamera._transform.Move(0, 0, delta / 10.0f);
+	Camera::MainCamera.transform.Move(0, 0, delta / 10.0f);
 }
 #pragma endregion

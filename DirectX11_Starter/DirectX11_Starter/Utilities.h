@@ -1,19 +1,17 @@
-#ifndef _DXUTILITIES_H
-#define _DXUTILITIES_H
+/* Assorted utilities that don't need their own file */
+
+#ifndef _UTILITIES_H
+#define _UTILITIES_H
 
 #include <Windows.h>
 #include "dxerr.h"
 #include <d3d11.h>
 #include <string>
 #include <iostream>
-//#include <random>
-//#include <vld.h>
 
 // Convenience macro for releasing a COM object
+// Use this for releasing GPU resources.
 #define ReleaseMacro(x) { if(x){ x->Release(); x = 0; } }
-
-
-
 
 // Macro for popping up a text box based
 // on a failed HRESULT and then quitting (only in debug builds)
@@ -35,8 +33,8 @@
 	#endif
 #endif
 
-
 // Static class to manage DirectX devices and contexts
+// For our purposes, we'll probably only have one device and one context.
 class DeviceManager {
 private:
 	static ID3D11Device* _currentDevice;
@@ -57,13 +55,16 @@ public:
 	};
 };
 
-// A high performance timer that uses QueryPerformanceCounter
+// A timer that uses QueryPerformanceCounter
 class DebugTimer {
 	static __int64 frequency;
 	static __int64 start;
 	static __int64 stop;
+	static std::wstring name;
 public:
-	static void Start();
+	// Starts the timer
+	static void Start(std::wstring timerName);
+	// Stops the timer and prints the time it took to execute
 	static void Stop();
 };
 
@@ -82,6 +83,8 @@ void LogString(std::wstring s);
 void LogString(std::wstring s1, std::wstring s2);
 void LogString(std::wstring s1, std::wstring s2, std::wstring s3);
 void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4);
+void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4, std::wstring s5);
+void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4, std::wstring s5, std::wstring s6);
 #endif
 
-#endif // _DXUTILITIES_H
+#endif // _UTILITIES_H

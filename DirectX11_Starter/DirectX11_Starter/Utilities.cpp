@@ -1,14 +1,19 @@
-#include "DXUtilities.h"
+#include "Utilities.h"
 
 // Initialize the static device variables
 ID3D11Device* DeviceManager::_currentDevice = nullptr;
 ID3D11DeviceContext* DeviceManager::_currentDeviceContext = nullptr;
 
-__int64 DebugTimer::frequency = 0;
-__int64 DebugTimer::start = 0;
-__int64 DebugTimer::stop = 0;
+// Initialize timer's variables
+__int64 DebugTimer::frequency = 0ULL;
+__int64 DebugTimer::start = 0ULL;
+__int64 DebugTimer::stop = 0ULL;
+std::wstring DebugTimer::name = L"";
 
-void DebugTimer::Start(){
+// Start the high performance timer
+void DebugTimer::Start(std::wstring timerName){
+	name = timerName;
+
 	LARGE_INTEGER freq;
 	QueryPerformanceFrequency(&freq);
 	frequency = freq.QuadPart;
@@ -18,6 +23,7 @@ void DebugTimer::Start(){
 	start = s.QuadPart;
 };
 
+// Stop the timer and log the 
 void DebugTimer::Stop(){
 	LARGE_INTEGER s;
 	QueryPerformanceCounter(&s);
@@ -25,9 +31,11 @@ void DebugTimer::Stop(){
 
 	__int64 diff = stop - start;
 	double seconds = (double)diff / (double)frequency;
-	LOG(L"Time taken: ", std::to_wstring(seconds*1000.0f), L"ms");
+	LOG(name, L": ", std::to_wstring(seconds*1000.0f), L"ms");
 };
 
+// Debug logging
+#if defined(DEBUG) | defined(_DEBUG)
 void LogString(std::wstring s){
 	std::wcout << s << std::endl;
 };
@@ -40,3 +48,10 @@ void LogString(std::wstring s1, std::wstring s2, std::wstring s3){
 void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4){
 	std::wcout << s1 << s2 << s3 << s4 << std::endl;
 };
+void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4, std::wstring s5){
+	std::wcout << s1 << s2 << s3 << s4 << s5 << std::endl;
+};
+void LogString(std::wstring s1, std::wstring s2, std::wstring s3, std::wstring s4, std::wstring s5, std::wstring s6){
+	std::wcout << s1 << s2 << s3 << s4 << s5 << s6 << std::endl;
+};
+#endif

@@ -4,7 +4,7 @@
 #include <DirectXMath.h>
 #include <d3d11.h>
 #include "Vertex.h"
-#include "DXUtilities.h"
+#include "Utilities.h"
 #include <map>
 #include <string>
 
@@ -56,6 +56,9 @@ private:
 	D3D_PRIMITIVE_TOPOLOGY _topology; // default is D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST 
 };
 
+////////// HARDCODED VERTICES //////////////
+/* Until we get a model loader going :)   */
+////////////////////////////////////////////
 static Vertex_POS_UV StandardCubeVertices[24] =
 {
 	// Front Face

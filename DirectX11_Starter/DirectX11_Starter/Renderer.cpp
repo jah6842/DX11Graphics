@@ -29,8 +29,8 @@ void Renderer::Draw(){
 	for(std::unordered_set<GameObject*>::iterator itr = registeredGOs.begin(); itr != registeredGOs.end(); ++itr){
 		// Check if the object is in the viewing frustum
 		// DISABLED FOR NOW, NOT WORKING!
-		//if(!Camera::MainCamera.PointInFrustum((*itr)->transform.position))
-		//	continue;
+		if(!Camera::MainCamera.PointInFrustum((*itr)->transform.Pos()))
+			continue;
 			
 		// Check if the object is using an instanced material
 		if(!(*itr)->material->IsInstanced()){
@@ -78,8 +78,8 @@ void Renderer::Draw(){
 		for(std::unordered_set<GameObject*>::iterator itr = registeredGOs.begin(); itr != registeredGOs.end(); ++itr){
 			// Check if the object is in the viewing frustum
 			// DISABLED FOR NOW, NOT WORKING!
-			//if(!Camera::MainCamera.PointInFrustum((*itr)->transform.position))
-			//	continue;
+			if(!Camera::MainCamera.PointInFrustum((*itr)->transform.Pos()))
+				continue;
 			
 			// Check if the object is using the current material
 			if((*itr)->material == currentRenderMaterial){
@@ -92,11 +92,10 @@ void Renderer::Draw(){
 
 		// Allocate memory for all of the instance data
 		instances = new InstanceType[renderCount];
-		
 
 		// Loop through all render items and put them into the instance array
 		for (UINT i = 0; i < renderCount; i++) {
-			instances[i].modelMatrix = renderList[i]->transform.WorldMatrix();;
+			instances[i].modelMatrix = renderList[i]->transform.WorldMatrix();//XMLoadFloat4x4(&wMatrix);
 		}
 
 		// Set up the description of the instance buffer.
@@ -154,12 +153,15 @@ void Renderer::Draw(){
 	}
 
 	delete[] renderList;
+	//LOG(L"Rendered objects: ", std::to_wstring(drawnObjects));
 };
 
+// Add a gameobject to the gameobjects list
 void Renderer::RegisterGameObject(GameObject* go){
 	registeredGOs.insert(go);
 };
 
+// Remove a gameobject from the gameobjects list
 void Renderer::UnRegisterGameObject(GameObject* go){
 	std::unordered_set<GameObject*>::iterator itr;
 	itr = registeredGOs.find(go);

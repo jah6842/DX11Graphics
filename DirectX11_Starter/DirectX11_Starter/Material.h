@@ -11,7 +11,7 @@
 #include <WICTextureLoader.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
-#include "DXUtilities.h"
+#include "Utilities.h"
 #include "ConstantBuffer.h"
 #include "Vertex.h"
 #include <iostream>
@@ -61,6 +61,7 @@ public:
 
 	// Assumes vertex and pixel shaders have the same prefix, optional texture
 	Material(MATERIAL_DESCRIPTION description);
+
 	// Destructor
 	~Material();
 

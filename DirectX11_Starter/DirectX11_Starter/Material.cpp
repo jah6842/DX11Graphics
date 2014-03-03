@@ -140,7 +140,8 @@ void Material::SetConstantBufferData(XMFLOAT4X4 world){
 			&wvpData,
 			0,
 			0);
-	} 
+	}
+
 	// View*Projection Matrix
 	else if(_cBufferLayout == CONSTANT_BUFFER_LAYOUT_VS_VPMATRIX){
 		VS_CONSTANT_BUFFER_VPMATRIX vpData;

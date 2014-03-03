@@ -18,8 +18,17 @@ private:
 
 	Renderer();
 	~Renderer();
+
+	// Internal drawing functions
+	static void DrawSingle(GameObject* go);
+	static void DrawBatched();
+
 public:
+	// Draws every registered gameobject
+	// Call this once per frame
 	static void Draw();
+
+	// Add and remove 
 	static void RegisterGameObject(GameObject* go);
 	static void UnRegisterGameObject(GameObject* go);
 };

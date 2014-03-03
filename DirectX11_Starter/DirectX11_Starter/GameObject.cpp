@@ -1,5 +1,9 @@
 #include "GameObject.h"
 
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_real_distribution<float> dis(0, 50);
+
 GameObject::GameObject(std::wstring meshName){
 	// Register the GameObject with the renderer
 	Renderer::RegisterGameObject(this);
@@ -39,21 +43,19 @@ GameObject::GameObject(){
 	flip++;
 	if(flip > 2)
 		flip = 0;
+
+	float randX;
+	randX = (dis(gen));
 	
 	// Set the mesh
-	mesh = Mesh::GetMesh(L"StandardCube");
+	//if(randX > 25)
+		mesh = Mesh::GetMesh(L"StandardCube");
+	//else
+	//	mesh = Mesh::GetMesh(L"StandardQuad");
 };
 
-std::random_device rd;
-std::mt19937 gen(rd());
-std::uniform_real_distribution<float> dis(0, 50);
-
 void GameObject::Update(float dt){
-	float randX, randY, randZ;
-	randX = (dis(gen) - 25) * dt;
-	randY = (dis(gen) - 25) * dt;
-	randZ = (dis(gen) - 25) * dt;
-	transform.Move(randX, randY, randZ);
+	
 };
 
 GameObject::~GameObject(){

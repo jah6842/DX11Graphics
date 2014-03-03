@@ -14,7 +14,7 @@
 #include <d3d11.h>
 #include <assert.h>
 #include "GameTimer.h"
-#include "DXUtilities.h"
+#include "Utilities.h"
 
 class DXGame
 {

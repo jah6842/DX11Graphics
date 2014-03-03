@@ -3,7 +3,7 @@
 
 #include <d3d11.h>
 #include <DirectXMath.h>
-#include "DXUtilities.h"
+#include "Utilities.h"
 
 using namespace DirectX;
 
@@ -54,6 +54,7 @@ public:
 	static XMFLOAT4X4 WorldMatrix(Transform t);
 
 private:
+	// Internals
 	XMFLOAT4X4 _matrix;
 	XMFLOAT3 _position;
 	XMFLOAT3 _rotation;
